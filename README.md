@@ -23,9 +23,10 @@ npm run dev
 
 | Route | What it is |
 |---|---|
-| `/` | The original `Entropy` component on black — the reference implementation |
-| `/portfolio-hero` | My portfolio hero, restyled, with the entropy field replacing the CSS polygons |
-| `/standalone/portfolio-hero.html` | The same hero as **plain HTML + vanilla JS**, no React |
+| `/` | **The full portfolio site** — dark rebuild, working navigation, entropy hero |
+| `/entropy` | The original `Entropy` component on black, unmodified — the reference implementation |
+| `/portfolio-hero` | Earlier hero-only preview in the old cream palette, kept for comparison |
+| `/standalone/portfolio-hero.html` | That cream hero as **plain HTML + vanilla JS**, no React |
 
 ---
 
@@ -33,12 +34,19 @@ npm run dev
 
 ```
 app/
-  page.tsx                      original Entropy demo (black theme)
+  page.tsx                      the portfolio site
   layout.tsx                    sets data-theme="dark", wires --font-noto
-  globals.css                   provided theme CSS
-  portfolio-hero/
-    page.tsx                    portfolio hero preview
-    portfolio-hero.css          design tokens lifted from the live site
+  globals.css                   theme tokens, display/eyebrow/pill classes, reveal
+  entropy/page.tsx              original Entropy demo (viewport-locked)
+  portfolio-hero/               earlier cream hero preview
+components/site/
+  nav.tsx                       fixed nav, scroll-spy, mobile sheet
+  hero.tsx                      display type + entropy field
+  marquee.tsx                   full-bleed ticker
+  section.tsx                   numbered section header + shell
+  sections.tsx                  about / process / work / capabilities / research / contact
+  reveal.tsx                    IntersectionObserver fade-in
+  lock-viewport.tsx             scopes the supplied viewport lock to /entropy
 components/ui/
   entropy.tsx                   the original component, kept faithful
   entropy-demo.tsx              its demo
@@ -46,7 +54,9 @@ components/ui/
 public/standalone/
   entropy-field.js              zero-dependency port for plain HTML sites
   portfolio-hero.html           self-contained demo of the above
-lib/utils.ts                    shadcn `cn()` helper
+lib/
+  content.ts                    all site copy, lifted from the live site
+  utils.ts                      shadcn `cn()` helper
 ```
 
 ---
@@ -225,6 +235,38 @@ is worth dropping too — the particle lattice reads better against a square gri
 | `data-divider` | `true` | draw the centre divider |
 
 ---
+
+### 6. The full rebuild
+
+Two problems turned out to share one cause. The hero preview's buttons did
+nothing because it was a **hero only** — `Explore work` pointed at `#work`, and
+no `#work` existed on that page. And the look needed to move toward
+[xkintaro.com](https://www.xkintaro.com/en). Both are fixed by building the
+actual site.
+
+Design language taken from the reference, measured off the live page:
+
+| | |
+|---|---|
+| Background / text | `#0a0a0a` / `#fafafa`, muted `#a1a1a1`, hairline `#1f1f1f` |
+| Headings | weight **900**, uppercase, `letter-spacing: -0.045em`, `line-height: 0.85` |
+| Body | weight **300**, with *serif italic* and **semibold** emphasis inline |
+| Structure | numbered sections `[001]`–`[006]`, full-bleed marquee ticker, pill buttons |
+| Motion | scroll-reveal fades, scroll-spy nav, vertical `SCROLL` cue |
+
+The one deviation from pure monochrome: the entropy field's chaotic half stays
+`--clay` `#b36d4d`, carrying a thread of the old warm palette into the dark
+rebuild. Order is white, noise is clay.
+
+**The viewport lock had to move.** The supplied `globals.css` set
+`position: fixed; overflow: hidden` on `html, body`, which makes a scrolling site
+impossible. Rather than delete it, it now ships as a `.lock-viewport` class that
+`/entropy` applies to `<html>` — the demo keeps the original behaviour, the site
+scrolls.
+
+**Anchor offsets stack.** `scroll-padding-top` on the scroller and
+`scroll-margin-top` on the target are additive: 88px + 96px landed every section
+184px below the nav. Only one of the two should set the offset.
 
 ## Deploying to Netlify
 

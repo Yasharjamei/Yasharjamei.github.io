@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
+import { site } from "@/lib/content";
 import "./globals.css";
 
 // Defines the --font-noto CSS variable that tailwind.config.ts maps to `font-sans`.
 const notoSans = Noto_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-noto",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Entropy",
-  description: "Order and chaos dance — digital poetry in motion.",
+  title: site.title,
+  description: site.description,
 };
 
 export default function RootLayout({
@@ -23,7 +25,7 @@ export default function RootLayout({
   // --text-primary/--text-secondary under :root[data-theme="dark"|"light"].
   return (
     <html lang="en" data-theme="dark" className={notoSans.variable}>
-      <body>{children}</body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

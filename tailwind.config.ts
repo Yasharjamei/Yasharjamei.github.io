@@ -13,9 +13,14 @@ export default {
         foreground: "var(--foreground)",
         primary: "var(--text-primary)",
         secondary: "var(--text-secondary)",
+        hairline: "var(--hairline)",
+        accent: "var(--accent)",
       },
       fontFamily: {
         sans: ['var(--font-noto)'],
+      },
+      maxWidth: {
+        shell: "1240px",
       },
     },
   },
