@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero with entropy field — standalone</title>
+<style>
+  :root{
+    --paper:#f6f3ee; --ink:#171717; --soft:#6c6962; --line:#ded8ce;
+    --panel:#fffdfa; --accent:#7b5b3a; --deep:#202825; --sage:#6b7d68;
+    --clay:#b36d4d; --shadow:0 26px 70px rgba(22,22,20,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}
+  .nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 5vw;background:rgba(246,243,238,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(222,216,206,.6)}
+  .mark{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+  .navlinks{display:flex;align-items:center;gap:20px}
+  .navlinks a{text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#34312c}
+  .talk{padding:9px 12px;border:1px solid var(--ink);border-radius:999px}
+  .hero{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:36px;align-items:center;padding:112px 5vw 70px;overflow:hidden}
+  .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:900}
+  h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(54px,8vw,112px);line-height:.92;letter-spacing:-.02em;margin:18px 0 22px;font-weight:500}
+  .lead{max-width:740px;font-size:19px;color:#3b3833}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .btn{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:11px 15px;border-radius:999px;border:1px solid var(--ink);text-decoration:none;font-weight:800;font-size:13px}
+  .btn.fill{background:var(--ink);color:var(--paper)}
+
+  .spatial-stage{position:relative;min-height:560px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#fffdf8,#e8e1d6);box-shadow:var(--shadow);overflow:hidden}
+  /* Survey grid kept behind the field for depth (no longer rotated). */
+  .gridlines{position:absolute;inset:0;background-image:linear-gradient(rgba(23,23,23,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(23,23,23,.06) 1px,transparent 1px);background-size:42px 42px}
+  .entropy-field{position:absolute;inset:0}
+  .stage-caption{position:absolute;left:22px;right:22px;bottom:22px;padding:16px;border:1px solid rgba(23,23,23,.12);border-radius:12px;background:rgba(255,253,250,.76);backdrop-filter:blur(16px)}
+  .stage-caption b{display:block}
+  .stage-caption span{display:block;color:var(--soft);font-size:13px;margin-top:4px}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:minmax(0,1fr)}
+    .spatial-stage{min-height:380px}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="mark">Yashar Jamei</div>
+  <nav class="navlinks" aria-label="Main navigation">
+    <a href="#work">Work</a><a href="#capabilities">Capabilities</a><a href="#research">Research</a><a href="#about">About</a><a href="#contact" class="talk">Let's talk</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="kicker">GIS / Spatial Intelligence / Strategic Planning</div>
+    <h1>Turning spatial data into strategic insight.</h1>
+    <p class="lead">I work across GIS, spatial analysis, data and urban planning to understand complex places, reveal patterns and support better decisions. My work connects technical analysis with strategic thinking.</p>
+    <div class="hero-actions">
+      <a class="btn fill" href="#work">Explore work</a>
+      <a class="btn" href="#how">How I work</a>
+    </div>
+  </div>
+
+  <!-- ===== the only part that changes in your site ===== -->
+  <div class="spatial-stage">
+    <div class="gridlines"></div>
+    <div class="entropy-field"
+         data-entropy-field
+         data-order-color="#202825"
+         data-chaos-color="#b36d4d"
+         data-line-color="#171717"
+         data-spacing="24"
+         data-neighbor-radius="90"
+         data-link-radius="48"></div>
+    <div class="stage-caption">
+      <b>Structure on the left. Noise on the right.</b>
+      <span>Spatial intelligence is the work of holding both &mdash; and finding where the pattern survives.</span>
+    </div>
+  </div>
+  <!-- ================================================== -->
+</section>
+
+<script src="./entropy-field.js"></script>
+</body>
+</html>

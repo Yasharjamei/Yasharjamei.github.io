@@ -1,0 +1,184 @@
+/* Design tokens lifted verbatim from jamayamaj.netlify.app */
+.pf {
+  --paper: #f6f3ee;
+  --ink: #171717;
+  --soft: #6c6962;
+  --line: #ded8ce;
+  --panel: #fffdfa;
+  --accent: #7b5b3a;
+  --deep: #202825;
+  --sage: #6b7d68;
+  --clay: #b36d4d;
+  --shadow: 0 26px 70px rgba(22, 22, 20, 0.16);
+
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.pf * {
+  box-sizing: border-box;
+}
+
+.pf .nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 5vw;
+  background: rgba(246, 243, 238, 0.78);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(222, 216, 206, 0.6);
+}
+
+.pf .mark {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.pf .navlinks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pf .navlinks a {
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #34312c;
+}
+
+.pf .talk {
+  padding: 9px 12px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+}
+
+.pf .hero {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  gap: 36px;
+  align-items: center;
+  padding: 112px 5vw 70px;
+  overflow: hidden;
+}
+
+.pf .kicker {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.pf h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(54px, 8vw, 112px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin: 18px 0 22px;
+  font-weight: 500;
+}
+
+.pf .lead {
+  max-width: 740px;
+  font-size: 19px;
+  color: #3b3833;
+}
+
+.pf .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.pf .btn {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.pf .btn.fill {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.pf .spatial-stage {
+  position: relative;
+  min-height: 560px;
+  height: 560px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fffdf8, #e8e1d6);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* Faint survey grid kept behind the particle field for depth. */
+.pf .gridlines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(23, 23, 23, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 23, 23, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.pf .field {
+  position: absolute;
+  inset: 0;
+}
+
+.pf .stage-caption {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 22px;
+  padding: 16px;
+  border: 1px solid rgba(23, 23, 23, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 253, 250, 0.76);
+  backdrop-filter: blur(16px);
+}
+
+.pf .stage-caption b {
+  display: block;
+}
+
+.pf .stage-caption span {
+  display: block;
+  color: var(--soft);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .pf .hero {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 100vh;
+  }
+  .pf .spatial-stage {
+    height: 380px;
+    min-height: 380px;
+  }
+}
