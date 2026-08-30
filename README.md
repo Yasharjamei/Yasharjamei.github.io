@@ -1,13 +1,13 @@
-# Website Design — Entropy Field
+# Yashar Jamei — Spatial Intelligence Portfolio
 
-A Next.js + TypeScript + Tailwind + shadcn workspace built around the **Entropy**
-particle component, plus a restyled adaptation for
-[jamayamaj.netlify.app](https://jamayamaj.netlify.app) — my spatial-intelligence portfolio.
+A Next.js + TypeScript + Tailwind portfolio site: ten GIS/spatial case studies,
+peer-reviewed research, a career roadmap, light/dark theming, and an
+order-to-chaos particle field in the hero.
 
-The idea: an ordered lattice on the left dissolving into chaos on the right.
-For a portfolio about GIS and spatial analysis, that is not decoration — it is
-the subject matter. Structure, noise, and the work of finding where the pattern
-survives.
+The field is the argument, not decoration. An ordered lattice on the left
+dissolving into chaos on the right — structure, noise, and the work of finding
+where the pattern survives. For a portfolio about spatial analysis, that is the
+subject matter.
 
 ---
 
@@ -23,10 +23,16 @@ npm run dev
 
 | Route | What it is |
 |---|---|
-| `/` | **The full portfolio site** — dark rebuild, working navigation, entropy hero |
-| `/entropy` | The original `Entropy` component on black, unmodified — the reference implementation |
-| `/portfolio-hero` | Earlier hero-only preview in the old cream palette, kept for comparison |
+| `/` | The portfolio — hero, about, process, work, roadmap, capabilities, research, contact |
+| `/work/<slug>` | Ten statically generated case-study pages, one per project |
+| `/entropy` | The original `Entropy` component on black, unmodified — reference implementation |
+| `/portfolio-hero` | Early hero-only preview in the old cream palette, kept for comparison |
 | `/standalone/portfolio-hero.html` | That cream hero as **plain HTML + vanilla JS**, no React |
+
+> **Do not run `npm run build` while `next dev` is running.** They share `.next`,
+> and building against a live dev server corrupts it — `Cannot find module
+> './611.js'`, missing vendor chunks, blank pages. Stop dev first, or verify
+> against `npx serve out`, which tests the real deployable artifact anyway.
 
 ---
 
@@ -34,309 +40,123 @@ npm run dev
 
 ```
 app/
-  page.tsx                      the portfolio site
-  layout.tsx                    sets data-theme="dark", wires --font-noto
-  globals.css                   theme tokens, display/eyebrow/pill classes, reveal
-  entropy/page.tsx              original Entropy demo (viewport-locked)
-  portfolio-hero/               earlier cream hero preview
+  page.tsx                    composes the sections
+  layout.tsx                  data-theme, --font-noto, theme-init script, cursor
+  globals.css                 theme tokens, display/eyebrow/pill classes, reveal
+  work/[slug]/page.tsx        case-study pages (generateStaticParams)
+  entropy/page.tsx            original Entropy demo (viewport-locked)
+  portfolio-hero/             early cream hero preview
 components/site/
-  nav.tsx                       fixed nav, scroll-spy, mobile sheet
-  hero.tsx                      display type + entropy field
-  marquee.tsx                   full-bleed ticker
-  section.tsx                   numbered section header + shell
-  sections.tsx                  about / process / work / capabilities / research / contact
-  reveal.tsx                    IntersectionObserver fade-in
-  lock-viewport.tsx             scopes the supplied viewport lock to /entropy
+  nav.tsx                     fixed nav, scroll-spy, mobile sheet, theme toggle
+  hero.tsx                    display type + entropy field
+  marquee.tsx                 full-bleed ticker
+  section.tsx                 numbered section header + shell
+  sections.tsx                about / process / work / capabilities / research / contact
+  roadmap.tsx                 vertical timeline
+  work-gallery.tsx            horizontal scroll rail of project cards
+  hanging-profile.tsx         draggable pendulum card
+  theme-toggle.tsx            light/dark switch + pre-paint init script
+  custom-cursor.tsx           trailing ring cursor
+  reveal.tsx                  IntersectionObserver fade-in
+  lock-viewport.tsx           scopes the supplied viewport lock to /entropy
 components/ui/
-  entropy.tsx                   the original component, kept faithful
-  entropy-demo.tsx              its demo
-  entropy-field.tsx             themeable, fills its parent, spatial-hash neighbours
-public/standalone/
-  entropy-field.js              zero-dependency port for plain HTML sites
-  portfolio-hero.html           self-contained demo of the above
+  entropy.tsx                 the original component, kept faithful
+  entropy-demo.tsx            its demo
+  entropy-field.tsx           themeable, fills its parent, spatial-hash neighbours
 lib/
-  content.ts                    all site copy, lifted from the live site
-  utils.ts                      shadcn `cn()` helper
+  content.ts                  ALL site copy — edit here, not in components
+  paths.ts                    asset() helper for basePath-aware raw URLs
+  utils.ts                    shadcn cn() helper
+public/
+  projects/<slug>.png         case-study screenshots, keyed by slug
+  standalone/                 zero-dependency vanilla port of the field
+  .nojekyll                   stops GitHub Pages from eating _next/
+scripts/make-zip.ps1          Netlify bundle builder
+.github/workflows/deploy.yml  GitHub Pages build + publish
 ```
+
+**All copy lives in `lib/content.ts`.** Adding a case study means adding an entry
+to `work` and dropping a matching `public/projects/<slug>.png` — the filename is
+derived from the slug.
 
 ---
 
-## The steps, in order
+## Deploying
 
-### 1. Environment
+### GitHub Pages
 
-Node.js **v24.19.0**, npm 11.17.0, Python 3.14.5.
-
-> **Gotcha worth recording:** a freshly-spawned shell reported `v18.18.2` while the
-> machine actually had v24.19.0 installed via winget. The winget install updates the
-> machine/user PATH, but existing shells keep a stale copy. Refresh it before
-> trusting a version check:
->
-> ```powershell
-> $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")
-> ```
-
-### 2. UI/UX Pro Max skill
-
-Installed globally so it applies across projects:
+Nothing is published until these run. `gh auth login` is interactive and must be
+run in your own terminal.
 
 ```bash
-npx --yes ui-ux-pro-max-cli@latest init --ai claude --global
+gh auth login
 ```
 
-This lands 7 skills in `~/.claude/skills/`: `ui-ux-pro-max`, `design-system`,
-`ui-styling`, `brand`, `banner-design`, `slides`, `design`. Its search backend is a
-Python script — the domain is a **flag**, not a positional argument:
+The repo name decides the URL. `origin` already points at `Yashar_Portfolio`, so
+create that repo and push to the existing remote:
 
 ```bash
-python ~/.claude/skills/ui-ux-pro-max/scripts/search.py "glassmorphism" --domain style
+gh repo create Yashar_Portfolio --public && git push -u origin main
 ```
 
-The marketplace route (`/plugin marketplace add ...`) was skipped: this repo has a
-documented symlink bug in the packaged zip, and the CLI installer is the maintainer's
-recommended path.
+Then enable Pages, building from Actions:
 
-### 3. Project scaffold
-
-`create-next-app` **refuses** a folder named `Website design` — npm package names
-cannot contain spaces or capitals. The project was hand-scaffolded instead, which
-also allowed pinning the right Tailwind major.
-
-**Tailwind v3, deliberately.** The supplied `globals.css` uses
-`@tailwind base/components/utilities` and the config uses a `content` array — both
-v3. Current `create-next-app` ships v4 (`@import "tailwindcss"`, no config file),
-which would have made the supplied CSS inert.
-
-### 4. Integrating `Entropy`
-
-The component went into `components/ui/` — the path `components.json` declares as
-the `ui` alias, and the path the demo imports from (`@/components/ui/entropy`).
-Every `npx shadcn@latest add ...` component lands there too, so a different folder
-would break both.
-
-Three bugs in the supplied code had to be fixed; each one breaks the build.
-
-**1. Malformed `@apply`**
-
-```css
-.footer-link { @apply hover: text-primary; }   /* ✗ parsed as two utilities */
-.footer-link { @apply hover:text-primary; }    /* ✓ */
+```bash
+gh api -X POST repos/Yasharjamei/Yashar_Portfolio/pages -f build_type=workflow
 ```
 
-**2. Duplicate export** — `demo.tsx` had both `export function EntropyDemo()` and a
-trailing `export { EntropyDemo }`. That is a duplicate-export syntax error.
+Live at **`https://yasharjamei.github.io/Yashar_Portfolio/`**, rebuilt on every
+push to `main`.
 
-**3. `'ctx' is possibly 'null'`** — confirmed by a failing build:
+For the bare `https://yasharjamei.github.io/` with no subpath, the repo must be
+named exactly `Yasharjamei.github.io`. The workflow detects that and drops the
+base path automatically.
 
-```
-./components/ui/entropy.tsx:137:7
-Type error: 'ctx' is possibly 'null'.
-```
+The repo must be **public** — Pages on private repos requires a paid plan.
 
-`function animate()` is *hoisted*, so TypeScript discards the `if (!ctx) return`
-narrowing inside it — a hoisted function could be called before the guard ran.
-An arrow function assigned to a `const` is created after the narrowing, so the
-narrowing survives:
+#### Two things that silently break Next.js on Pages
 
-```ts
-const animate = () => { ctx.clearRect(0, 0, size, size) /* ... */ }
-```
+**Jekyll eats `_next/`.** Pages runs Jekyll by default, and Jekyll ignores any
+directory starting with an underscore — every script and stylesheet 404s and the
+page renders as unstyled HTML. `public/.nojekyll` disables it; the file must
+reach `out/`, which it does by living in `public/`.
 
-**Two decisions the supplied code forced:**
+**Project sites are served from a subpath.** At `username.github.io/<repo>`, a
+root-absolute `/_next/...` resolves to the domain root and misses.
+`next.config.mjs` reads `NEXT_PUBLIC_BASE_PATH`, which the workflow derives from
+the repo name — empty for a `*.github.io` repo, `/<repo>` otherwise. `next/link`
+and `next/image` apply it automatically; **raw `<img src>` and hand-written URLs
+do not**, so those go through `asset()` in `lib/paths.ts`. `trailingSlash: true`
+emits `work/<slug>/index.html`, because Pages will not resolve an extensionless
+path.
 
-- `data-theme="dark"` on `<html>`. The CSS defines `--background`, `--foreground`,
-  `--text-primary` and `--text-secondary` **only** under
-  `:root[data-theme="dark"|"light"]` — never on bare `:root`. Without the attribute
-  all four are undefined and `body` gets no background at all.
-- `--font-noto` had to be defined. `tailwind.config.ts` maps `font-sans` to
-  `var(--font-noto)`, but nothing declared it; it is now wired via `next/font`.
+Verify a subpath build before trusting it:
 
-### 5. Adapting it to the portfolio
-
-The live site turned out to be a **single self-contained ~10.5 MB HTML file** —
-vanilla HTML/CSS with one 5.25 MB inline script, no React, no build step. So the
-React component cannot be dropped in as-is.
-
-Its palette, read from the live CSS:
-
-| Token | Value | |
-|---|---|---|
-| `--paper` | `#f6f3ee` | background |
-| `--ink` | `#171717` | body text |
-| `--line` | `#ded8ce` | borders |
-| `--accent` | `#7b5b3a` | kickers |
-| `--clay` | `#b36d4d` | accent points |
-| `--deep` | `#202825` | dark elements |
-
-The original `Entropy` is hard-coded black with white particles — it would fight a
-warm cream editorial design. So `entropy-field.tsx` was written alongside it,
-leaving the original untouched:
-
-- **Themeable** — ordered particles in `--deep`, chaotic in `--clay`, links in `--ink`.
-  Colours go through an `rgba()` helper rather than hex-alpha concatenation, so any
-  CSS colour works.
-- **Fills its parent** at any aspect ratio, via `ResizeObserver` — the original is a
-  fixed square.
-- **Spatial hash for neighbours.** The original is O(n²): 625 particles → ~390k
-  distance checks every 30 frames. At hero size that becomes ~1,500 particles and
-  ~2.4M checks. Bucketing by neighbour radius and scanning 3×3 cells keeps it linear.
-- **Honours `prefers-reduced-motion`**, painting one static frame — and re-evaluates
-  live, because capturing the preference once freezes the field permanently.
-
-`public/standalone/entropy-field.js` is a zero-dependency port of the same
-simulation for the plain-HTML site.
-
----
-
-## Dropping it into the live site
-
-In the portfolio's HTML, the hero's right panel is `.spatial-stage`, currently three
-CSS-animated `.layer` polygons and four pulsing `.point` dots. Replace its interior:
-
-```html
-<div class="spatial-stage">
-  <div class="gridlines"></div>
-
-  <div class="entropy-field"
-       data-entropy-field
-       data-order-color="#202825"
-       data-chaos-color="#b36d4d"
-       data-line-color="#171717"
-       data-spacing="24"></div>
-
-  <div class="stage-caption">
-    <b>Structure on the left. Noise on the right.</b>
-    <span>Spatial intelligence is the work of holding both.</span>
-  </div>
-</div>
+```bash
+NEXT_PUBLIC_BASE_PATH=/Yashar_Portfolio npm run build
 ```
 
-Add the positioning rule, then the script before `</body>`:
+Every `_next` reference in `out/index.html` should carry the prefix and none
+should be bare. Last checked: 15 prefixed, 0 bare.
 
-```css
-.entropy-field { position: absolute; inset: 0; }
-```
-
-Delete the now-unused `.layer` / `.point` rules and their `@keyframes float` and
-`@keyframes pulse`. The `.gridlines` rotation (`transform: rotate(-7deg) scale(1.2)`)
-is worth dropping too — the particle lattice reads better against a square grid.
-
-### Options
-
-| Attribute | Default | |
-|---|---|---|
-| `data-order-color` | `#202825` | ordered (left) particles |
-| `data-chaos-color` | `#b36d4d` | chaotic (right) particles |
-| `data-line-color` | `#171717` | links and centre divider |
-| `data-spacing` | `24` | px between particles |
-| `data-neighbor-radius` | `90` | px interaction radius |
-| `data-link-radius` | `48` | px line-drawing radius |
-| `data-dot-size` | `1.6` | particle radius |
-| `data-divider` | `true` | draw the centre divider |
-
----
-
-### 6. The full rebuild
-
-Two problems turned out to share one cause. The hero preview's buttons did
-nothing because it was a **hero only** — `Explore work` pointed at `#work`, and
-no `#work` existed on that page. And the look needed to move toward
-[xkintaro.com](https://www.xkintaro.com/en). Both are fixed by building the
-actual site.
-
-Design language taken from the reference, measured off the live page:
-
-| | |
-|---|---|
-| Background / text | `#0a0a0a` / `#fafafa`, muted `#a1a1a1`, hairline `#1f1f1f` |
-| Headings | weight **900**, uppercase, `letter-spacing: -0.045em`, `line-height: 0.85` |
-| Body | weight **300**, with *serif italic* and **semibold** emphasis inline |
-| Structure | numbered sections `[001]`–`[006]`, full-bleed marquee ticker, pill buttons |
-| Motion | scroll-reveal fades, scroll-spy nav, vertical `SCROLL` cue |
-
-The one deviation from pure monochrome: the entropy field's chaotic half stays
-`--clay` `#b36d4d`, carrying a thread of the old warm palette into the dark
-rebuild. Order is white, noise is clay.
-
-**The viewport lock had to move.** The supplied `globals.css` set
-`position: fixed; overflow: hidden` on `html, body`, which makes a scrolling site
-impossible. Rather than delete it, it now ships as a `.lock-viewport` class that
-`/entropy` applies to `<html>` — the demo keeps the original behaviour, the site
-scrolls.
-
-**Anchor offsets stack.** `scroll-padding-top` on the scroller and
-`scroll-margin-top` on the target are additive: 88px + 96px landed every section
-184px below the nav. Only one of the two should set the offset.
-
-### 7. Structure parity with the reference
-
-With [xkintaro/kintarowwwards](https://github.com/xkintaro/kintarowwwards) (MIT,
-© 2026 Mustafa TAŞAL) available, the patterns could be read rather than inferred.
-
-| Reference | Here | Note |
-|---|---|---|
-| `widgets/hanging-profile.tsx` | `components/site/hanging-profile.tsx` | Adapted. Draggable card on a rope, real pendulum physics (`a = -g/L·sin θ`) with damping. Paused off-screen and under reduced motion. |
-| Horizontal project rail + modal | `components/site/work-gallery.tsx` + `/work/[slug]` | Rail reimplemented **without framer-motion** — a scroll listener and one `translate3d`, no new dependency. Detail opens as a **route, not a modal**, so cases are linkable and indexable. |
-| `sections/roadmap.tsx` | `components/site/roadmap.tsx` | Vertical spine, nodes, ghost year numerals. |
-| `widgets/theme-switcher.tsx` | `components/site/theme-toggle.tsx` | Light/dark with `localStorage` and a pre-paint inline script so there is no flash. |
-
-**Light mode is not an inversion.** Dark is the reference language; light restores
-the original warm portfolio identity (`--paper #f6f3ee`, `--accent #7b5b3a`). The
-toggle moves between two designed palettes. Canvas can't read CSS variables, so
-`EntropyField` and the pendulum resolve theme tokens via `getComputedStyle` and a
-`MutationObserver` on `data-theme`.
-
-All seven papers now carry journal and year, supplied directly, and are ordered
-newest first.
-
-### 8. Real content
-
-The roadmap is now drawn from the CV — ten entries from the 2013 Bachelor of Urban
-Planning through the 2022 RMIT PhD and into the Melton City Council infrastructure
-work, ending on the 2026 JUISS paper. Two dates are inferred from role spans rather
-than stated outright (2024 and 2025 describe ongoing Melton work); everything else
-is taken directly.
-
-Project screenshots live in `public/projects/<slug>.png` — the filename is derived
-from the slug, so adding a case study means dropping in a matching PNG and adding
-the entry to `work` in `lib/content.ts`. They add ~3.8 MB to the bundle;
-converting to WebP would cut that substantially if load time matters.
-
-`components/site/custom-cursor.tsx` is a trailing ring that expands over anything
-clickable. Also adapted from the reference (MIT), also without framer-motion — one
-rAF loop lerping toward the pointer. It **augments** the native cursor rather than
-hiding it, and disables itself on coarse pointers and under reduced motion.
-
-### Working note: don't build while `next dev` is running
-
-`npm run build` and the dev server share `.next`. Running the build against a live
-dev server corrupts it — `Cannot find module './611.js'`, missing vendor chunks,
-blank pages. Stop the dev server first, or verify against `npx serve out`, which
-tests the real deployable artifact anyway.
-
-## Deploying to Netlify
-
-The project is configured for static export (`output: "export"` in
-`next.config.mjs`), so it builds to a plain folder with no server runtime.
+### Netlify (drag-and-drop)
 
 ```bash
 npm run build
 ```
 
-That writes `out/`. To produce the drag-and-drop bundle:
-
 ```bash
 powershell -File scripts/make-zip.ps1
 ```
 
-Then drop `website-design-netlify.zip` onto the deploy box at
-[app.netlify.com/drop](https://app.netlify.com/drop).
+Drop `website-design-netlify.zip` onto [app.netlify.com/drop](https://app.netlify.com/drop).
+No account needed.
 
-> **Do not use `Compress-Archive` for this.** Windows PowerShell writes zip
-> entries with backslash separators (`_next\static\...`). Netlify unpacks on
-> Linux, which treats those as literal filenames rather than folders — the
-> structure flattens and every asset 404s. `scripts/make-zip.ps1` writes entries
-> with forward slashes via `ZipArchive` directly. Verify any zip before uploading:
+> **Do not use `Compress-Archive`.** Windows PowerShell writes zip entries with
+> backslash separators (`_next\static\...`). Netlify unpacks on Linux, which
+> treats those as literal filenames rather than folders — the tree flattens and
+> every asset 404s. `scripts/make-zip.ps1` writes forward slashes via `ZipArchive`
+> and fails loudly if either invariant breaks. To check any zip:
 >
 > ```powershell
 > Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -345,72 +165,170 @@ Then drop `website-design-netlify.zip` onto the deploy box at
 > $z.Dispose()
 > ```
 
-Once deployed, the routes are `/`, `/portfolio-hero.html`, and
+Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 `/standalone/portfolio-hero.html`.
 
-## Publishing to GitHub Pages
+---
 
-Authenticate once — interactive, so run it in your own terminal:
+## Design language
 
-```bash
-gh auth login
+Measured off [xkintaro.com](https://www.xkintaro.com/en), the reference site.
+
+| | |
+|---|---|
+| Background / text | `#0a0a0a` / `#fafafa`, muted `#a1a1a1`, hairline `#1f1f1f` |
+| Headings | weight **900**, uppercase, `letter-spacing: -0.045em`, `line-height: 0.85` |
+| Body | weight **300**, with *serif italic* and **semibold** emphasis inline |
+| Structure | numbered sections `[001]`–`[007]`, full-bleed marquee, pill buttons |
+| Motion | scroll-reveal fades, scroll-spy nav, vertical `SCROLL` cue, trailing cursor |
+
+**Light mode is not an inversion.** Dark is the reference language; light restores
+the original warm portfolio identity (`--paper #f6f3ee`, `--accent #7b5b3a`). The
+toggle moves between two designed palettes, persisted to `localStorage` and applied
+by a pre-paint inline script so there is no flash of the wrong one.
+
+The one deviation from pure monochrome: the entropy field's chaotic half stays
+`--clay #b36d4d`, carrying a thread of the old warm palette into the dark rebuild.
+Order is white, noise is clay.
+
+Canvas cannot read CSS variables, so `EntropyField` and the pendulum resolve theme
+tokens via `getComputedStyle` plus a `MutationObserver` on `data-theme`.
+
+---
+
+## Engineering notes
+
+### Environment
+
+Node **v24.19.0**, npm 11.17.0, Python 3.14.5.
+
+> A freshly-spawned shell reported `v18.18.2` while the machine actually had
+> v24.19.0 via winget. The installer updates the machine/user PATH, but existing
+> shells keep a stale copy. Refresh before trusting a version check:
+>
+> ```powershell
+> $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")
+> ```
+
+### Scaffold
+
+`create-next-app` **refuses** a folder named `Website design` — npm package names
+cannot contain spaces or capitals. Hand-scaffolded instead, which also allowed
+pinning **Tailwind v3** deliberately: the supplied `globals.css` uses
+`@tailwind base/components/utilities` and a `content` array, both v3. Current
+`create-next-app` ships v4 (`@import "tailwindcss"`, no config), which would have
+made the supplied CSS inert.
+
+### Three bugs in the supplied `Entropy` snippet
+
+Each one breaks the build.
+
+**Malformed `@apply`**
+
+```css
+.footer-link { @apply hover: text-primary; }   /* ✗ parsed as two utilities */
+.footer-link { @apply hover:text-primary; }    /* ✓ */
 ```
 
-Create the repo and push. The name decides the URL:
+**Duplicate export** — `demo.tsx` had both `export function EntropyDemo()` and a
+trailing `export { EntropyDemo }`.
 
-```bash
-gh repo create portfolio --public --source=. --remote=origin --push
+**`'ctx' is possibly 'null'`** — `function animate()` is *hoisted*, so TypeScript
+discards the `if (!ctx) return` narrowing inside it: a hoisted function could be
+called before the guard ran. An arrow function assigned to a `const` is created
+after the narrowing, so the narrowing survives:
+
+```ts
+const animate = () => { ctx.clearRect(0, 0, size, size) /* ... */ }
 ```
 
-Then turn Pages on, set to build from Actions:
+### Two decisions the supplied code forced
 
-```bash
-gh api -X POST repos/Yasharjamei/portfolio/pages -f build_type=workflow
-```
+- **`data-theme` on `<html>`.** The CSS defined the four colour variables *only*
+  under `:root[data-theme="dark"|"light"]`, never on bare `:root` — without the
+  attribute all four are undefined and `body` gets no background. A bare-`:root`
+  dark fallback has since been added as a safety net.
+- **`--font-noto` had to be defined.** `tailwind.config.ts` maps `font-sans` to
+  `var(--font-noto)`, but nothing declared it; now wired via `next/font`.
 
-`.github/workflows/deploy.yml` builds and publishes on every push to `main`.
-The live URL is `https://yasharjamei.github.io/portfolio/`.
+### The viewport lock had to move
 
-Naming the repo `Yasharjamei.github.io` instead serves it at
-`https://yasharjamei.github.io/` with no subpath.
+The supplied `globals.css` set `position: fixed; overflow: hidden` on `html, body`,
+which makes a scrolling site impossible. Rather than delete it, it ships as a
+`.lock-viewport` class that `/entropy` applies to `<html>` — the demo keeps the
+original behaviour, the site scrolls.
 
-### Two things that silently break Next.js on Pages
+### Anchor offsets stack
 
-**Jekyll eats `_next/`.** GitHub Pages runs Jekyll by default, and Jekyll ignores
-any directory starting with an underscore — so every script and stylesheet 404s
-and the page renders unstyled. `public/.nojekyll` disables it; the file must reach
-`out/`, which it does by living in `public/`.
+`scroll-padding-top` on the scroller and `scroll-margin-top` on the target are
+additive: 88px + 96px landed every section 184px below an 87px nav. Only one of
+the two should set the offset.
 
-**Project sites are served from a subpath.** At
-`username.github.io/<repo>`, a root-absolute `/_next/...` resolves to the domain
-root and misses. `next.config.mjs` reads `NEXT_PUBLIC_BASE_PATH`, which the
-workflow derives from the repo name — empty for a `*.github.io` repo, `/<repo>`
-otherwise. `next/link` and `next/image` pick that up automatically; **raw
-`<img src>` and hand-written URLs do not**, so those go through `asset()` in
-`lib/paths.ts`. `trailingSlash: true` emits `work/<slug>/index.html`, because
-Pages will not resolve an extensionless path.
+### `EntropyField` vs `Entropy`
 
-Verify a subpath build before trusting it:
+The original is hard-coded black with white particles and a fixed 400px square.
+`entropy-field.tsx` was written alongside it, leaving the original untouched:
 
-```bash
-NEXT_PUBLIC_BASE_PATH=/portfolio npm run build
-```
+- **Themeable**, via `rgba()` conversion rather than hex-alpha concatenation, so
+  any CSS colour works.
+- **Fills its parent** at any aspect ratio, via `ResizeObserver`.
+- **Spatial hash for neighbours.** The original is O(n²): 625 particles → ~390k
+  distance checks every 30 frames. At hero size that becomes ~1,500 particles and
+  ~2.4M checks. Bucketing by neighbour radius and scanning 3×3 cells keeps it
+  roughly linear.
+- **Honours `prefers-reduced-motion`**, and re-evaluates it live — capturing the
+  preference once freezes the field on a single frame permanently.
 
-Every `_next` reference in `out/index.html` should carry the prefix, and none
-should be bare.
+---
+
+## Content status
+
+The roadmap is drawn from the CV — ten entries from the 2013 Bachelor of Urban
+Planning through the 2022 RMIT PhD and into the Melton City Council infrastructure
+work, ending on the 2026 JUISS paper.
+
+> **Two dates are inferred.** The CV gives the Melton role as "October 2023 –
+> Present" without year-by-year breaks, so the **2024 and 2025** entries are a
+> reasonable split of ongoing work rather than stated fact. Everything else is
+> taken directly.
+
+All seven publications carry journal and year, supplied directly, ordered newest
+first.
+
+Project screenshots add ~3.8 MB to the bundle; converting to WebP would cut most
+of that if load time matters.
+
+---
 
 ## Known constraints
 
-- **`Entropy` is not responsive.** `size` is a fixed 400px square. At a 375px
-  viewport it overflows — and `globals.css` sets
-  `html, body { position: fixed; overflow: hidden }`, so the overflow is *clipped,
-  not scrollable*. `EntropyField` was written to fill its container for this reason.
-- **The demo's global CSS is aggressive.** `position: fixed` on `html`/`body` and a
-  universal `transition-property: opacity` are fine for a single full-bleed demo,
-  but will fight a normal scrolling page.
-- Verified with `npm run build` — all routes compile, no type errors.
+- **`Entropy` (the original) is not responsive.** `size` is a fixed 400px square;
+  at a 375px viewport it overflows, and on `/entropy` the viewport lock clips
+  rather than scrolls. `EntropyField` was written to fill its container for
+  exactly this reason.
+- **The universal `transition-property: opacity`** inherited from the supplied CSS
+  applies site-wide. It is specificity 0, so any class-based transition overrides
+  it, but it is worth knowing about.
+- The horizontal work rail pins only at `≥1024px` and with motion allowed;
+  otherwise it degrades to a swipeable row.
 
-## Licence
+---
 
-The `Entropy` component originates from a third-party snippet; the portfolio
-adaptation and vanilla port are mine.
+## Licence and attribution
+
+The `Entropy` component originates from a third-party snippet.
+
+`components/site/hanging-profile.tsx` and `components/site/custom-cursor.tsx` are
+adapted from [xkintaro/kintarowwwards](https://github.com/xkintaro/kintarowwwards),
+used under the MIT Licence:
+
+```
+MIT License
+Copyright (c) 2026 Mustafa TAŞAL (kintaro)
+```
+
+Both were reworked for this site's tokens and reimplemented without
+framer-motion. No content, imagery or copy from that project is used here.
+
+The portfolio, its content, the vanilla port and the entropy field adaptation are
+mine.
