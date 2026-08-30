@@ -1,8 +1,12 @@
 # Yashar Jamei — Spatial Intelligence Portfolio
 
+**Live: [yasharjamei.github.io](https://yasharjamei.github.io/)**
+
 A Next.js + TypeScript + Tailwind portfolio site: ten GIS/spatial case studies,
 peer-reviewed research, a career roadmap, light/dark theming, and an
 order-to-chaos particle field in the hero.
+
+Published from this repo by GitHub Actions — **every push to `main` redeploys**.
 
 The field is the argument, not decoration. An ordered lattice on the left
 dissolving into chaos on the right — structure, noise, and the work of finding
@@ -83,39 +87,59 @@ derived from the slug.
 
 ## Deploying
 
-### GitHub Pages
+### GitHub Pages — already set up
 
-Nothing is published until these run. `gh auth login` is interactive and must be
-run in your own terminal.
+The site is live at **https://yasharjamei.github.io/**. To publish a change:
+
+```bash
+git push
+```
+
+`.github/workflows/deploy.yml` builds and republishes on every push to `main`.
+No manual step, no zip. Check a run with `gh run list` or
+`gh run watch`.
+
+**Do not rename the repo.** `Yasharjamei.github.io` is a GitHub *user site*,
+which requires the repo name to match the account name **exactly** — the
+account is `Yasharjamei`, so anything else (including `Yashar.jamei.github.io`)
+demotes it to a *project* site served from `/<repo>/` and breaks the bare URL.
+The workflow would add the base path automatically, but the address changes.
+
+The repo must stay **public** — Pages on private repos requires a paid plan.
+
+Because a user site has no base path, the build is byte-identical to the Netlify
+one; the same `out/` and the same zip serve both.
+
+<details>
+<summary>Setting this up again from scratch</summary>
+
+Run these as separate commands — **PowerShell has no `&&` operator**, so chaining
+them is a parser error and the first step silently never runs.
 
 ```bash
 gh auth login
 ```
 
-The repo name decides the URL. `origin` points at `Yasharjamei.github.io` — a
-**user site**, which GitHub serves at the domain root with no subpath. Create it
-and push:
-
 ```bash
-gh repo create Yasharjamei.github.io --public && git push -u origin main
+gh repo create Yasharjamei.github.io --public
 ```
 
-Then enable Pages, building from Actions:
-
 ```bash
-gh api -X POST repos/Yasharjamei/Yasharjamei.github.io/pages -f build_type=workflow
+git push -u origin main
 ```
 
-Live at **`https://yasharjamei.github.io/`**, rebuilt on every push to `main`.
+Pages may auto-enable itself as `build_type: legacy`, which serves the **repo
+root** — there is no `index.html` there, so you get the README or a 404. Force it
+to build from Actions, and use `PUT` if it is already enabled:
 
-The repo name must match the account name exactly — `Yasharjamei.github.io`.
-Anything else becomes a *project* site served from `/<repo>/`, and the workflow
-will add that base path automatically.
+```bash
+gh api -X PUT repos/Yasharjamei/Yasharjamei.github.io/pages -f build_type=workflow
+```
 
-The repo must be **public** — Pages on private repos requires a paid plan.
+Confirm with `gh api repos/Yasharjamei/Yasharjamei.github.io/pages` — you want
+`"build_type":"workflow"`.
 
-Because a user site has no base path, the build is byte-identical to the Netlify
-one; the same `out/` and the same zip serve both.
+</details>
 
 #### Two things that silently break Next.js on Pages
 
@@ -133,9 +157,9 @@ do not**, so those go through `asset()` in `lib/paths.ts`. `trailingSlash: true`
 emits `work/<slug>/index.html`, because Pages will not resolve an extensionless
 path.
 
-This does not apply to the current setup — `Yasharjamei.github.io` is a user site
-and serves at the root. It matters only if the repo is ever renamed. To verify a
-subpath build:
+Neither currently bites: `.nojekyll` ships, and `Yasharjamei.github.io` is a user
+site serving at the root, so there is no base path. The second only matters if the
+repo is ever renamed. To verify a subpath build:
 
 ```bash
 NEXT_PUBLIC_BASE_PATH=/some-repo npm run build
@@ -144,7 +168,9 @@ NEXT_PUBLIC_BASE_PATH=/some-repo npm run build
 Every `_next` reference in `out/index.html` should carry the prefix and none
 should be bare. Last checked against `/portfolio`: 15 prefixed, 0 bare.
 
-### Netlify (drag-and-drop)
+### Netlify (drag-and-drop) — optional
+
+Not needed now that Pages is wired up; kept for a quick throwaway preview.
 
 ```bash
 npm run build
