@@ -2,10 +2,17 @@
 
 import { useEffect, useRef, type ReactNode } from 'react'
 
+/** Content is force-revealed after this long, whatever the observer did. */
+const FAILSAFE_MS = 2500
+
 /**
- * Fades its children in once they scroll into view. Falls back to visible
- * immediately when IntersectionObserver is unavailable, so content is never
- * trapped at opacity 0.
+ * Fades its children in once they scroll into view.
+ *
+ * Deliberately progressive: nothing is hidden until this effect runs and adds
+ * `reveal-armed`. If JavaScript is disabled, or IntersectionObserver is missing,
+ * or its callback never fires (a background tab that never paints, for
+ * instance), the content simply stays visible rather than leaving the page
+ * blank. A timeout backstops the observer for the same reason.
  */
 export function Reveal({
   children,
@@ -22,25 +29,34 @@ export function Reveal({
     const el = ref.current
     if (!el) return
 
-    if (typeof IntersectionObserver === 'undefined') {
-      el.classList.add('is-visible')
-      return
-    }
+    // No observer available: leave the content plainly visible.
+    if (typeof IntersectionObserver === 'undefined') return
+
+    el.classList.add('reveal-armed')
+
+    let showTimer = 0
+    const show = () => el.classList.add('is-visible')
 
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue
-          const t = window.setTimeout(() => el.classList.add('is-visible'), delay)
           io.disconnect()
-          return () => window.clearTimeout(t)
+          showTimer = window.setTimeout(show, delay)
+          return
         }
       },
       { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
     )
 
     io.observe(el)
-    return () => io.disconnect()
+    const failsafe = window.setTimeout(show, FAILSAFE_MS)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(showTimer)
+      window.clearTimeout(failsafe)
+    }
   }, [delay])
 
   return (

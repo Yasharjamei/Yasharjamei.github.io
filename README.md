@@ -92,27 +92,30 @@ run in your own terminal.
 gh auth login
 ```
 
-The repo name decides the URL. `origin` already points at `Yashar_Portfolio`, so
-create that repo and push to the existing remote:
+The repo name decides the URL. `origin` points at `Yasharjamei.github.io` — a
+**user site**, which GitHub serves at the domain root with no subpath. Create it
+and push:
 
 ```bash
-gh repo create Yashar_Portfolio --public && git push -u origin main
+gh repo create Yasharjamei.github.io --public && git push -u origin main
 ```
 
 Then enable Pages, building from Actions:
 
 ```bash
-gh api -X POST repos/Yasharjamei/Yashar_Portfolio/pages -f build_type=workflow
+gh api -X POST repos/Yasharjamei/Yasharjamei.github.io/pages -f build_type=workflow
 ```
 
-Live at **`https://yasharjamei.github.io/Yashar_Portfolio/`**, rebuilt on every
-push to `main`.
+Live at **`https://yasharjamei.github.io/`**, rebuilt on every push to `main`.
 
-For the bare `https://yasharjamei.github.io/` with no subpath, the repo must be
-named exactly `Yasharjamei.github.io`. The workflow detects that and drops the
-base path automatically.
+The repo name must match the account name exactly — `Yasharjamei.github.io`.
+Anything else becomes a *project* site served from `/<repo>/`, and the workflow
+will add that base path automatically.
 
 The repo must be **public** — Pages on private repos requires a paid plan.
+
+Because a user site has no base path, the build is byte-identical to the Netlify
+one; the same `out/` and the same zip serve both.
 
 #### Two things that silently break Next.js on Pages
 
@@ -130,14 +133,16 @@ do not**, so those go through `asset()` in `lib/paths.ts`. `trailingSlash: true`
 emits `work/<slug>/index.html`, because Pages will not resolve an extensionless
 path.
 
-Verify a subpath build before trusting it:
+This does not apply to the current setup — `Yasharjamei.github.io` is a user site
+and serves at the root. It matters only if the repo is ever renamed. To verify a
+subpath build:
 
 ```bash
-NEXT_PUBLIC_BASE_PATH=/Yashar_Portfolio npm run build
+NEXT_PUBLIC_BASE_PATH=/some-repo npm run build
 ```
 
 Every `_next` reference in `out/index.html` should carry the prefix and none
-should be bare. Last checked: 15 prefixed, 0 bare.
+should be bare. Last checked against `/portfolio`: 15 prefixed, 0 bare.
 
 ### Netlify (drag-and-drop)
 

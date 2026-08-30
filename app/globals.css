@@ -203,8 +203,13 @@ body {
     }
 }
 
-/* Scroll-reveal: hidden until observed, then eased in. */
-.reveal {
+/*
+ * Scroll-reveal, progressively enhanced. Content is NOT hidden by default —
+ * the component adds `reveal-armed` on mount, so if JavaScript never runs, or
+ * IntersectionObserver never fires, everything stays readable instead of the
+ * whole page sitting at opacity 0.
+ */
+.reveal.reveal-armed {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 700ms cubic-bezier(0.23, 1, 0.32, 1),
@@ -212,7 +217,7 @@ body {
   will-change: opacity, transform;
 }
 
-.reveal.is-visible {
+.reveal.reveal-armed.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -221,7 +226,8 @@ body {
   html {
     scroll-behavior: auto;
   }
-  .reveal {
+  .reveal,
+  .reveal.reveal-armed {
     opacity: 1;
     transform: none;
     transition: none;
