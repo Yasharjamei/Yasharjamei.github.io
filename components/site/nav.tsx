@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { nav, site } from '@/lib/content'
+import { ThemeToggle } from './theme-toggle'
 
 export function Nav() {
   const [open, setOpen] = useState(false)
@@ -78,35 +79,41 @@ export function Nav() {
           ))}
         </nav>
 
-        <a href="#contact" className="pill hidden border border-primary text-primary hover:bg-primary hover:text-background md:inline-flex">
-          Let&rsquo;s talk
-        </a>
+        <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
+          <a href="#contact" className="pill border border-primary text-primary hover:bg-primary hover:text-background">
+            Let&rsquo;s talk
+          </a>
+        </div>
 
-        <button
-          type="button"
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-11 w-11 items-center justify-center text-primary md:hidden"
-        >
-          <span className="relative block h-4 w-6">
-            <span
-              className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ${
-                open ? 'top-2 rotate-45' : 'top-0'
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-2 block h-px w-6 bg-current transition-opacity duration-200 ${
-                open ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
-            <span
-              className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ${
-                open ? 'top-2 -rotate-45' : 'top-4'
-              }`}
-            />
-          </span>
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-11 w-11 items-center justify-center text-primary"
+          >
+            <span className="relative block h-4 w-6">
+              <span
+                className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ${
+                  open ? 'top-2 rotate-45' : 'top-0'
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-2 block h-px w-6 bg-current transition-opacity duration-200 ${
+                  open ? 'opacity-0' : 'opacity-100'
+                }`}
+              />
+              <span
+                className={`absolute left-0 block h-px w-6 bg-current transition-transform duration-300 ${
+                  open ? 'top-2 -rotate-45' : 'top-4'
+                }`}
+              />
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Mobile sheet */}

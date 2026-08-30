@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
 import { site } from "@/lib/content";
+import { themeInitScript } from "@/components/site/theme-toggle";
 import "./globals.css";
 
 // Defines the --font-noto CSS variable that tailwind.config.ts maps to `font-sans`.
@@ -21,10 +22,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // data-theme is required: globals.css only defines --background/--foreground/
-  // --text-primary/--text-secondary under :root[data-theme="dark"|"light"].
   return (
-    <html lang="en" data-theme="dark" className={notoSans.variable}>
+    <html lang="en" data-theme="dark" className={notoSans.variable} suppressHydrationWarning>
+      <head>
+        {/* Applies the stored theme before first paint, so there is no flash
+            of the wrong palette. Must stay inline and synchronous. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="font-sans antialiased">{children}</body>
     </html>
   );

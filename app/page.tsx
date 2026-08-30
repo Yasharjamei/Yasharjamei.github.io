@@ -1,6 +1,7 @@
 import { Nav } from "@/components/site/nav";
 import { Hero } from "@/components/site/hero";
 import { Marquee } from "@/components/site/marquee";
+import { Roadmap } from "@/components/site/roadmap";
 import {
   About,
   Capabilities,
@@ -20,6 +21,7 @@ export default function Home() {
         <About />
         <Process />
         <Work />
+        <Roadmap />
         <Capabilities />
         <Research />
         <Contact />

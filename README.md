@@ -268,6 +268,39 @@ scrolls.
 `scroll-margin-top` on the target are additive: 88px + 96px landed every section
 184px below the nav. Only one of the two should set the offset.
 
+### 7. Structure parity with the reference
+
+With [xkintaro/kintarowwwards](https://github.com/xkintaro/kintarowwwards) (MIT,
+© 2026 Mustafa TAŞAL) available, the patterns could be read rather than inferred.
+
+| Reference | Here | Note |
+|---|---|---|
+| `widgets/hanging-profile.tsx` | `components/site/hanging-profile.tsx` | Adapted. Draggable card on a rope, real pendulum physics (`a = -g/L·sin θ`) with damping. Paused off-screen and under reduced motion. |
+| Horizontal project rail + modal | `components/site/work-gallery.tsx` + `/work/[slug]` | Rail reimplemented **without framer-motion** — a scroll listener and one `translate3d`, no new dependency. Detail opens as a **route, not a modal**, so cases are linkable and indexable. |
+| `sections/roadmap.tsx` | `components/site/roadmap.tsx` | Vertical spine, nodes, ghost year numerals. |
+| `widgets/theme-switcher.tsx` | `components/site/theme-toggle.tsx` | Light/dark with `localStorage` and a pre-paint inline script so there is no flash. |
+
+**Light mode is not an inversion.** Dark is the reference language; light restores
+the original warm portfolio identity (`--paper #f6f3ee`, `--accent #7b5b3a`). The
+toggle moves between two designed palettes. Canvas can't read CSS variables, so
+`EntropyField` and the pendulum resolve theme tokens via `getComputedStyle` and a
+`MutationObserver` on `data-theme`.
+
+> **Roadmap content is placeholder.** `roadmap` in `lib/content.ts` has two real
+> entries (the 2019 *Data in Brief* dataset and the 2026 JUISS paper) and three
+> marked `Replace with…`. Edit them before publishing.
+
+> **Publication metadata is partial.** ScienceDirect returns 403 to automated
+> requests, so only two of seven papers carry a verified journal and year. The rest
+> link out without metadata rather than display a guess.
+
+### Working note: don't build while `next dev` is running
+
+`npm run build` and the dev server share `.next`. Running the build against a live
+dev server corrupts it — `Cannot find module './611.js'`, missing vendor chunks,
+blank pages. Stop the dev server first, or verify against `npx serve out`, which
+tests the real deployable artifact anyway.
+
 ## Deploying to Netlify
 
 The project is configured for static export (`output: "export"` in

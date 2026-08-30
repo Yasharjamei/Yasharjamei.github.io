@@ -53,9 +53,9 @@ interface P {
  */
 export function EntropyField({
   className = '',
-  orderColor = '#202825',
-  chaosColor = '#b36d4d',
-  lineColor = '#171717',
+  orderColor,
+  chaosColor,
+  lineColor,
   spacing = 22,
   neighborRadius = 90,
   linkRadius = 46,
@@ -75,6 +75,27 @@ export function EntropyField({
 
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     let reduceMotion = motionQuery.matches
+
+    // Any colour left unset falls back to a theme token, so the field follows
+    // the light/dark toggle. Canvas can't consume CSS variables directly.
+    const readTokens = () => {
+      const s = getComputedStyle(document.documentElement)
+      const v = (name: string, fallback: string) => s.getPropertyValue(name).trim() || fallback
+      return {
+        order: orderColor ?? v('--field-order', '#fafafa'),
+        chaos: chaosColor ?? v('--field-chaos', '#b36d4d'),
+        line: lineColor ?? v('--text-primary', '#fafafa'),
+      }
+    }
+    let tokens = readTokens()
+
+    const themeObserver = new MutationObserver(() => {
+      tokens = readTokens()
+    })
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
 
     let w = 0
     let h = 0
@@ -176,7 +197,7 @@ export function EntropyField({
         for (const n of p.neighbors) {
           const d = Math.hypot(p.x - n.x, p.y - n.y)
           if (d >= linkRadius) continue
-          ctx.strokeStyle = withAlpha(lineColor, 0.16 * (1 - d / linkRadius))
+          ctx.strokeStyle = withAlpha(tokens.line, 0.16 * (1 - d / linkRadius))
           ctx.lineWidth = 0.6
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
@@ -185,14 +206,14 @@ export function EntropyField({
         }
 
         const alpha = p.order ? 0.75 - p.influence * 0.35 : 0.8
-        ctx.fillStyle = withAlpha(p.order ? orderColor : chaosColor, alpha)
+        ctx.fillStyle = withAlpha(p.order ? tokens.order : tokens.chaos, alpha)
         ctx.beginPath()
         ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2)
         ctx.fill()
       }
 
       if (divider) {
-        ctx.strokeStyle = withAlpha(lineColor, 0.22)
+        ctx.strokeStyle = withAlpha(tokens.line, 0.22)
         ctx.lineWidth = 0.5
         ctx.beginPath()
         ctx.moveTo(w / 2, 0)
@@ -249,6 +270,7 @@ export function EntropyField({
 
     return () => {
       ro.disconnect()
+      themeObserver.disconnect()
       motionQuery.removeEventListener('change', onMotionChange)
       if (raf) cancelAnimationFrame(raf)
     }

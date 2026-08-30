@@ -1,6 +1,8 @@
 import { Section, SectionHeader } from './section'
 import { Reveal } from './reveal'
-import { capabilities, process, research, site, work } from '@/lib/content'
+import { HangingProfile } from './hanging-profile'
+import { WorkGallery } from './work-gallery'
+import { capabilities, process, research, site } from '@/lib/content'
 
 export function About() {
   return (
@@ -18,21 +20,27 @@ export function About() {
         }
       />
 
-      <Reveal delay={120}>
-        <div className="mt-14 grid gap-10 border-t border-hairline pt-12 md:grid-cols-2 md:gap-16">
-          <p className="display text-[clamp(24px,3.2vw,40px)] text-primary">
-            Technical analysis,
-            <br />
-            strategic judgement.
-          </p>
-          <p className="text-[17px] font-light leading-relaxed text-secondary">
-            I combine urban and regional planning, GIS, spatial analysis, data analytics, research
-            and applied problem solving. I am interested in work where the spatial pattern matters,
-            the data is imperfect, and the answer needs to be communicated clearly enough to support
-            action.
-          </p>
-        </div>
-      </Reveal>
+      <div className="mt-14 grid items-start gap-10 border-t border-hairline pt-12 lg:grid-cols-[1.4fr_auto] lg:gap-16">
+        <Reveal delay={120}>
+          <div className="grid gap-10 md:grid-cols-2 md:gap-12">
+            <p className="display text-[clamp(24px,3.2vw,40px)] text-primary">
+              Technical analysis,
+              <br />
+              strategic judgement.
+            </p>
+            <p className="text-[17px] font-light leading-relaxed text-secondary">
+              I combine urban and regional planning, GIS, spatial analysis, data analytics, research
+              and applied problem solving. I am interested in work where the spatial pattern matters,
+              the data is imperfect, and the answer needs to be communicated clearly enough to
+              support action.
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal delay={220} className="hidden justify-center lg:flex">
+          <HangingProfile />
+        </Reveal>
+      </div>
     </Section>
   )
 }
@@ -67,37 +75,27 @@ export function Process() {
 
 export function Work() {
   return (
-    <Section id="work" className="border-t border-hairline">
-      <SectionHeader
-        index="003"
-        title="Selected Work"
-        lead={
-          <>
-            Case studies across GIS, spatial analysis, data integrity, planning evidence, climate
-            resilience and <em className="font-serif italic text-primary">business intelligence</em>.
-          </>
-        }
-      />
-
-      <div className="mt-14 border-t border-hairline">
-        {work.map((item, i) => (
-          <Reveal key={item.title} delay={Math.min(i * 40, 240)}>
-            <article className="group grid gap-4 border-b border-hairline py-8 transition-colors duration-300 hover:bg-[#101010] md:grid-cols-[64px_1fr_1.1fr] md:items-baseline md:gap-8 md:px-4">
-              <span className="font-mono text-[11px] tracking-[0.24em] text-secondary">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div>
-                <p className="eyebrow">{item.category}</p>
-                <h3 className="display mt-3 text-[clamp(22px,2.6vw,32px)] text-primary">
-                  {item.title}
-                </h3>
-              </div>
-              <p className="text-[15px] font-light leading-relaxed text-secondary">{item.body}</p>
-            </article>
-          </Reveal>
-        ))}
+    // Not <Section>: the gallery is full-bleed, so only the header is shelled.
+    <section id="work" className="border-t border-hairline py-24 md:py-32">
+      <div className="mx-auto max-w-shell px-6 md:px-10">
+        <SectionHeader
+          index="003"
+          title="Selected Work"
+          lead={
+            <>
+              Case studies across GIS, spatial analysis, data integrity, planning evidence, climate
+              resilience and{' '}
+              <em className="font-serif italic text-primary">business intelligence</em>.
+            </>
+          }
+        />
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.2em] text-secondary">
+          Scroll sideways &middot; select a project to read the full case
+        </p>
       </div>
-    </Section>
+
+      <WorkGallery />
+    </section>
   )
 }
 
@@ -105,7 +103,7 @@ export function Capabilities() {
   return (
     <Section id="capabilities" className="border-t border-hairline">
       <SectionHeader
-        index="004"
+        index="005"
         title="Capabilities"
         lead="The technical and strategic ground the work stands on."
       />
@@ -137,7 +135,7 @@ export function Research() {
   return (
     <Section id="research" className="border-t border-hairline">
       <SectionHeader
-        index="005"
+        index="006"
         title="Research"
         lead="Peer-reviewed work in urban climate, greening, land surface temperature, land-use change, remote sensing and spatial analytics."
       />
@@ -145,12 +143,31 @@ export function Research() {
       <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline md:grid-cols-2 lg:grid-cols-3">
         {research.map((paper, i) => (
           <Reveal key={paper.title} delay={i * 60}>
-            <article className="flex h-full flex-col bg-background p-8 transition-colors duration-300 hover:bg-[#111111]">
+            <a
+              href={paper.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="group flex h-full flex-col bg-background p-8 transition-colors duration-300 hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)]"
+            >
               <h3 className="text-[18px] font-semibold leading-snug text-primary">{paper.title}</h3>
               <p className="mt-4 flex-1 text-[15px] font-light leading-relaxed text-secondary">
                 {paper.body}
               </p>
-            </article>
+              {paper.meta ? (
+                <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.16em] text-secondary">
+                  {paper.meta}
+                </p>
+              ) : null}
+              <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-semibold text-primary">
+                View article
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                >
+                  &#8599;
+                </span>
+              </span>
+            </a>
           </Reveal>
         ))}
       </div>
@@ -162,7 +179,7 @@ export function Contact() {
   return (
     <Section id="contact" className="border-t border-hairline">
       <Reveal>
-        <p className="eyebrow">[006]</p>
+        <p className="eyebrow">[007]</p>
         <h2 className="display mt-5 text-[clamp(38px,8vw,96px)] text-primary">
           Have a spatial
           <br />

@@ -57,6 +57,16 @@
 
 :root {
   --elegant-font: 'Great Vibes';
+
+  /* Fallback = dark, so the page is never unstyled if data-theme is missing. */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1a1;
+  --hairline: #1f1f1f;
+  --accent: #b36d4d;
+  --field-order: #fafafa;
+  --field-chaos: #b36d4d;
 }
 
 :root[data-theme="dark"] {
@@ -66,15 +76,21 @@
   --text-secondary: #a1a1a1;
   --hairline: #1f1f1f;
   --accent: #b36d4d;
+  --field-order: #fafafa;
+  --field-chaos: #b36d4d;
 }
 
+/* Light mode keeps the original warm portfolio identity rather than
+   inverting the dark palette — the toggle moves between two real designs. */
 :root[data-theme="light"] {
-  --background: #ffffff;
-  --foreground: #000000;
-  --text-primary: #000000;
-  --text-secondary: #666666;
-  --hairline: #e5e5e5;
+  --background: #f6f3ee;
+  --foreground: #171717;
+  --text-primary: #171717;
+  --text-secondary: #6c6962;
+  --hairline: #ded8ce;
   --accent: #7b5b3a;
+  --field-order: #202825;
+  --field-chaos: #b36d4d;
 }
 
 /* 修复移动设备上的视口高度问题 */
@@ -119,7 +135,11 @@ body {
 }
 
 ::selection {
-  background-color: rgba(255, 255, 255, 0.16);
+  background-color: color-mix(in srgb, var(--foreground) 18%, transparent);
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--foreground) 26%, transparent);
 }
 
 /* 只保留opacity的过渡效果，移除颜色相关的过渡 */
@@ -138,13 +158,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3a3a3a;
   border: 3px solid var(--background);
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: color-mix(in srgb, var(--foreground) 42%, transparent);
 }
 
 @layer components {

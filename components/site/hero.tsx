@@ -54,24 +54,18 @@ export function Hero() {
         {/* Order dissolving into chaos — the subject matter, not decoration. */}
         <Reveal delay={200}>
           <div className="relative">
-            <div className="relative h-[380px] overflow-hidden rounded-2xl border border-hairline bg-[#0d0d0d] md:h-[560px]">
+            <div className="relative h-[380px] overflow-hidden rounded-2xl border border-hairline bg-[color-mix(in_srgb,var(--foreground)_3%,var(--background))] md:h-[560px]">
               <div
                 aria-hidden="true"
-                className="absolute inset-0 opacity-[0.55]"
+                className="absolute inset-0"
                 style={{
                   backgroundImage:
-                    'linear-gradient(rgba(250,250,250,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(250,250,250,.045) 1px, transparent 1px)',
+                    'linear-gradient(color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--foreground) 6%, transparent) 1px, transparent 1px)',
                   backgroundSize: '42px 42px',
                 }}
               />
-              <EntropyField
-                orderColor="#fafafa"
-                chaosColor="#b36d4d"
-                lineColor="#fafafa"
-                spacing={24}
-                neighborRadius={90}
-                linkRadius={48}
-              />
+              {/* Colours omitted on purpose: the field reads theme tokens. */}
+              <EntropyField spacing={24} neighborRadius={90} linkRadius={48} />
               <div className="absolute inset-x-5 bottom-5 rounded-xl border border-hairline bg-background/70 p-4 backdrop-blur-md">
                 <p className="text-[13px] font-semibold text-primary">
                   Structure on the left. Noise on the right.
