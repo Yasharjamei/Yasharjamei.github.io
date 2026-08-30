@@ -152,15 +152,18 @@ export function Research() {
               rel="noreferrer noopener"
               className="group flex h-full flex-col bg-background p-8 transition-colors duration-300 hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)]"
             >
-              <h3 className="text-[18px] font-semibold leading-snug text-primary">{paper.title}</h3>
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="text-[18px] font-semibold leading-snug text-primary">
+                  {paper.title}
+                </h3>
+                <span className="shrink-0 font-mono text-[11px] tracking-[0.16em] text-secondary">
+                  {paper.year}
+                </span>
+              </div>
               <p className="mt-4 flex-1 text-[15px] font-light leading-relaxed text-secondary">
                 {paper.body}
               </p>
-              {paper.meta ? (
-                <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.16em] text-secondary">
-                  {paper.meta}
-                </p>
-              ) : null}
+              <p className="mt-5 font-serif text-[13px] italic text-secondary">{paper.journal}</p>
               <span className="mt-5 inline-flex items-center gap-2 text-[13px] font-semibold text-primary">
                 View article
                 <span

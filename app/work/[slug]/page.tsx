@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { work, site } from "@/lib/content";
+import { asset } from "@/lib/paths";
 import { Reveal } from "@/components/site/reveal";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 
@@ -91,7 +92,7 @@ export default async function ProjectPage({
           <figure className="mt-14 overflow-hidden rounded-2xl border border-hairline bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={`/projects/${project.slug}.png`}
+              src={asset(`/projects/${project.slug}.png`)}
               alt={`${project.title} — dashboard screenshot`}
               className="w-full"
             />

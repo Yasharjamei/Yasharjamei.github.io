@@ -316,42 +316,55 @@ export const roadmap = [
   },
 ];
 
+/** Ordered newest first. */
 export const research = [
   {
-    title: "Built-Up Ratio and Air Temperature",
-    body: "Evidence on how development intensity and built-up form affect air temperature in urban contexts.",
-    url: "https://www.sciencedirect.com/science/article/abs/pii/S2210670714001085",
+    title: "Charging Ahead or Charging Alone?",
+    body: "A triadic integration framework for electric vehicle, land-use and urban-development policy in New South Wales, Australia.",
+    url: "https://juiss.org/index.php/juiss/article/view/329",
+    journal: "Journal of Urban Intelligence and Smart Systems",
+    year: "2026",
   },
   {
     title: "COVID, Urban Climate and Energy",
     body: "Applied analysis connecting urban climate, air quality, land surface temperature and activity patterns.",
     url: "https://www.sciencedirect.com/science/article/pii/S2211467X22001572",
-  },
-  {
-    title: "Global Urban Climate Dataset",
-    body: "Time-series dataset linking land surface temperature, vegetation, built-up areas and climatic factors across global cities.",
-    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6660608/",
-    meta: "Data in Brief · 2019",
+    journal: "Energy Strategy Reviews",
+    year: "2022",
   },
   {
     title: "LULC Change and Land Surface Temperature",
     body: "Remote sensing and spatial modelling of land-use/land-cover change and temperature impacts.",
     url: "https://www.mdpi.com/2071-1050/14/22/14868",
+    journal: "Sustainability (MDPI)",
+    year: "2022",
+  },
+  {
+    title: "Global Urban Climate Dataset",
+    body: "Time-series dataset linking land surface temperature, vegetation, built-up areas and climatic factors across global cities.",
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6660608/",
+    journal: "Data in Brief",
+    year: "2019",
   },
   {
     title: "Melbourne Surface Urban Heat Island",
     body: "Research connecting vegetation, built-up areas and land surface temperature patterns in Melbourne.",
     url: "https://www.sciencedirect.com/science/article/abs/pii/S0048969718351854",
+    journal: "Science of The Total Environment",
+    year: "2019",
   },
   {
     title: "Urban Geometry, Greening and Thermal Comfort",
     body: "Review evidence on how urban geometry and pedestrian-level greening influence outdoor thermal comfort.",
     url: "https://www.sciencedirect.com/science/article/abs/pii/S1364032115011831",
+    journal: "Renewable and Sustainable Energy Reviews",
+    year: "2016",
   },
   {
-    title: "Charging Ahead or Charging Alone?",
-    body: "A triadic integration framework for electric vehicle, land-use and urban-development policy in New South Wales, Australia.",
-    url: "https://juiss.org/index.php/juiss/article/view/329",
-    meta: "Journal of Urban Intelligence and Smart Systems · 2026",
+    title: "Built-Up Ratio and Air Temperature",
+    body: "Evidence on how development intensity and built-up form affect air temperature in urban contexts.",
+    url: "https://www.sciencedirect.com/science/article/abs/pii/S2210670714001085",
+    journal: "Sustainable Cities and Society",
+    year: "2015",
   },
 ];

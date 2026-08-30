@@ -286,9 +286,8 @@ toggle moves between two designed palettes. Canvas can't read CSS variables, so
 `EntropyField` and the pendulum resolve theme tokens via `getComputedStyle` and a
 `MutationObserver` on `data-theme`.
 
-> **Publication metadata is partial.** ScienceDirect returns 403 to automated
-> requests, so only two of seven papers carry a verified journal and year. The rest
-> link out without metadata rather than display a guess.
+All seven papers now carry journal and year, supplied directly, and are ordered
+newest first.
 
 ### 8. Real content
 
@@ -349,20 +348,56 @@ Then drop `website-design-netlify.zip` onto the deploy box at
 Once deployed, the routes are `/`, `/portfolio-hero.html`, and
 `/standalone/portfolio-hero.html`.
 
-## Publishing to GitHub
+## Publishing to GitHub Pages
 
-GitHub CLI 2.98.0 is installed. Authenticate once — this step is interactive and
-must be run in your own terminal:
+Authenticate once — interactive, so run it in your own terminal:
 
 ```bash
 gh auth login
 ```
 
-Then create the repo and push:
+Create the repo and push. The name decides the URL:
 
 ```bash
-gh repo create website-design --public --source=. --remote=origin --push
+gh repo create portfolio --public --source=. --remote=origin --push
 ```
+
+Then turn Pages on, set to build from Actions:
+
+```bash
+gh api -X POST repos/Yasharjamei/portfolio/pages -f build_type=workflow
+```
+
+`.github/workflows/deploy.yml` builds and publishes on every push to `main`.
+The live URL is `https://yasharjamei.github.io/portfolio/`.
+
+Naming the repo `Yasharjamei.github.io` instead serves it at
+`https://yasharjamei.github.io/` with no subpath.
+
+### Two things that silently break Next.js on Pages
+
+**Jekyll eats `_next/`.** GitHub Pages runs Jekyll by default, and Jekyll ignores
+any directory starting with an underscore — so every script and stylesheet 404s
+and the page renders unstyled. `public/.nojekyll` disables it; the file must reach
+`out/`, which it does by living in `public/`.
+
+**Project sites are served from a subpath.** At
+`username.github.io/<repo>`, a root-absolute `/_next/...` resolves to the domain
+root and misses. `next.config.mjs` reads `NEXT_PUBLIC_BASE_PATH`, which the
+workflow derives from the repo name — empty for a `*.github.io` repo, `/<repo>`
+otherwise. `next/link` and `next/image` pick that up automatically; **raw
+`<img src>` and hand-written URLs do not**, so those go through `asset()` in
+`lib/paths.ts`. `trailingSlash: true` emits `work/<slug>/index.html`, because
+Pages will not resolve an extensionless path.
+
+Verify a subpath build before trusting it:
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/portfolio npm run build
+```
+
+Every `_next` reference in `out/index.html` should carry the prefix, and none
+should be bare.
 
 ## Known constraints
 

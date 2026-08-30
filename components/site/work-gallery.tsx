@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { work } from '@/lib/content'
+import { asset } from '@/lib/paths'
 
 /**
  * Desktop: the section pins and the rail translates sideways as you scroll —
@@ -102,7 +103,7 @@ export function WorkGallery() {
                 <div className="mt-5 overflow-hidden rounded-lg border border-hairline bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`/projects/${project.slug}.png`}
+                    src={asset(`/projects/${project.slug}.png`)}
                     alt={`${project.title} — dashboard screenshot`}
                     loading="lazy"
                     decoding="async"
