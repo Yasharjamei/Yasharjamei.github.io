@@ -226,6 +226,55 @@ is worth dropping too — the particle lattice reads better against a square gri
 
 ---
 
+## Deploying to Netlify
+
+The project is configured for static export (`output: "export"` in
+`next.config.mjs`), so it builds to a plain folder with no server runtime.
+
+```bash
+npm run build
+```
+
+That writes `out/`. To produce the drag-and-drop bundle:
+
+```bash
+powershell -File scripts/make-zip.ps1
+```
+
+Then drop `website-design-netlify.zip` onto the deploy box at
+[app.netlify.com/drop](https://app.netlify.com/drop).
+
+> **Do not use `Compress-Archive` for this.** Windows PowerShell writes zip
+> entries with backslash separators (`_next\static\...`). Netlify unpacks on
+> Linux, which treats those as literal filenames rather than folders — the
+> structure flattens and every asset 404s. `scripts/make-zip.ps1` writes entries
+> with forward slashes via `ZipArchive` directly. Verify any zip before uploading:
+>
+> ```powershell
+> Add-Type -AssemblyName System.IO.Compression.FileSystem
+> $z = [System.IO.Compression.ZipFile]::OpenRead("website-design-netlify.zip")
+> @($z.Entries | Where-Object { $_.FullName -like '*\*' }).Count   # must be 0
+> $z.Dispose()
+> ```
+
+Once deployed, the routes are `/`, `/portfolio-hero.html`, and
+`/standalone/portfolio-hero.html`.
+
+## Publishing to GitHub
+
+GitHub CLI 2.98.0 is installed. Authenticate once — this step is interactive and
+must be run in your own terminal:
+
+```bash
+gh auth login
+```
+
+Then create the repo and push:
+
+```bash
+gh repo create website-design --public --source=. --remote=origin --push
+```
+
 ## Known constraints
 
 - **`Entropy` is not responsive.** `size` is a fixed 400px square. At a 375px
