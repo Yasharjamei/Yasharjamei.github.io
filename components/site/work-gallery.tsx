@@ -89,7 +89,7 @@ export function WorkGallery() {
             <Link
               key={project.slug}
               href={`/work/${project.slug}`}
-              className="group flex w-[300px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-hairline p-7 transition-colors duration-300 hover:border-primary/50 hover:bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)] sm:w-[360px] lg:h-[420px] lg:w-[420px]"
+              className="group flex w-[300px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-hairline p-6 transition-colors duration-300 hover:border-primary/50 hover:bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)] sm:w-[360px] lg:h-[520px] lg:w-[420px]"
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -98,10 +98,22 @@ export function WorkGallery() {
                   </span>
                   <span className="eyebrow">{project.category}</span>
                 </div>
-                <h3 className="display mt-8 text-[clamp(22px,2.4vw,30px)] text-primary">
+
+                <div className="mt-5 overflow-hidden rounded-lg border border-hairline bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/projects/${project.slug}.png`}
+                    alt={`${project.title} — dashboard screenshot`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-[170px] w-full object-cover object-top opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+                  />
+                </div>
+
+                <h3 className="display mt-5 text-[clamp(20px,2.2vw,26px)] text-primary">
                   {project.title}
                 </h3>
-                <p className="mt-4 text-[15px] font-light leading-relaxed text-secondary">
+                <p className="mt-3 line-clamp-3 text-[14px] font-light leading-relaxed text-secondary">
                   {project.summary}
                 </p>
               </div>

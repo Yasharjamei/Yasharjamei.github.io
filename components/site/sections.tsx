@@ -37,8 +37,11 @@ export function About() {
           </div>
         </Reveal>
 
-        <Reveal delay={220} className="hidden justify-center lg:flex">
+        <Reveal delay={220} className="flex flex-col items-center">
           <HangingProfile />
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-secondary">
+            Drag me
+          </p>
         </Reveal>
       </div>
     </Section>

@@ -286,13 +286,27 @@ toggle moves between two designed palettes. Canvas can't read CSS variables, so
 `EntropyField` and the pendulum resolve theme tokens via `getComputedStyle` and a
 `MutationObserver` on `data-theme`.
 
-> **Roadmap content is placeholder.** `roadmap` in `lib/content.ts` has two real
-> entries (the 2019 *Data in Brief* dataset and the 2026 JUISS paper) and three
-> marked `Replace with…`. Edit them before publishing.
-
 > **Publication metadata is partial.** ScienceDirect returns 403 to automated
 > requests, so only two of seven papers carry a verified journal and year. The rest
 > link out without metadata rather than display a guess.
+
+### 8. Real content
+
+The roadmap is now drawn from the CV — ten entries from the 2013 Bachelor of Urban
+Planning through the 2022 RMIT PhD and into the Melton City Council infrastructure
+work, ending on the 2026 JUISS paper. Two dates are inferred from role spans rather
+than stated outright (2024 and 2025 describe ongoing Melton work); everything else
+is taken directly.
+
+Project screenshots live in `public/projects/<slug>.png` — the filename is derived
+from the slug, so adding a case study means dropping in a matching PNG and adding
+the entry to `work` in `lib/content.ts`. They add ~3.8 MB to the bundle;
+converting to WebP would cut that substantially if load time matters.
+
+`components/site/custom-cursor.tsx` is a trailing ring that expands over anything
+clickable. Also adapted from the reference (MIT), also without framer-motion — one
+rAF loop lerping toward the pointer. It **augments** the native cursor rather than
+hiding it, and disables itself on coarse pointers and under reduced motion.
 
 ### Working note: don't build while `next dev` is running
 

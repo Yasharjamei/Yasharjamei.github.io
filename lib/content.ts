@@ -2,7 +2,7 @@
 
 export const site = {
   name: "Yashar Jamei",
-  mark: "JAMEI",
+  mark: "YASHAR JAMEI",
   role: "GIS / Spatial Intelligence / Strategic Planning",
   title: "Yashar Jamei — Spatial Intelligence Portfolio",
   description:
@@ -262,30 +262,52 @@ export const capabilities = [
   },
 ];
 
-/**
- * PLACEHOLDER — replace the years and text with your own milestones.
- * These are structural examples only; they are not claims about your career.
- */
+/** Career timeline, drawn from the CV. */
 export const roadmap = [
   {
+    year: "2013",
+    body: "Completed a Bachelor of Urban Planning at the University of Mazandaran — the start of a consistent interest in how places are structured and why they work the way they do.",
+    tags: ["Urban Planning"],
+  },
+  {
+    year: "2016",
+    body: "Finished a Master of Regional Planning at the University of Tehran, moving from site-scale questions to regional systems and the evidence needed to plan them.",
+    tags: ["Regional Planning", "Spatial Analysis"],
+  },
+  {
+    year: "2018",
+    body: "Began designing and teaching GIS and spatial analysis within Building and Urban Design courses at Victoria University — five years of building curriculum that made spatial tools usable by students with no prior GIS background.",
+    tags: ["QGIS", "Curriculum Design", "Teaching"],
+  },
+  {
     year: "2019",
-    body: "Published a time-series dataset on land surface temperature, vegetation and built-up areas across the top 20 global cities in Data in Brief — the foundation for later urban climate work.",
-    tags: ["Remote Sensing", "Google Earth Engine", "Urban Climate"],
+    body: "Published a time-series dataset linking land surface temperature, vegetation and built-up areas across the top 20 global cities in Data in Brief — groundwork for the urban heat research that followed.",
+    tags: ["Remote Sensing", "Urban Climate", "Open Data"],
   },
   {
     year: "2021",
-    body: "Replace with what happened this year — a role, a qualification, a shift in the kind of problem you were solving.",
-    tags: ["ArcGIS Pro", "QGIS"],
+    body: "Research Fellow and Geospatial Scientist at Deakin University and the Office of Planetary Observations. Built machine learning classifiers in Python to automate land cover analysis from satellite imagery, supporting urban heat island and renewable energy siting research.",
+    tags: ["Python", "Machine Learning", "Satellite Imagery", "ArcGIS"],
+  },
+  {
+    year: "2022",
+    body: "Awarded a PhD in Built Environment at RMIT University, combining GIS, remote sensing and spatial statistical modelling. The research now sits near 1,000 citations.",
+    tags: ["GIS", "Remote Sensing", "Spatial Statistics"],
   },
   {
     year: "2023",
-    body: "Replace with your move into local government spatial analytics and operational dashboards.",
-    tags: ["Power BI", "Fulcrum", "ArcGIS Online"],
+    body: "Moved into practice. Validated planning and cadastral data at Macedon Ranges Shire Council, built interactive zoning web maps at Echelon Planning, then joined Melton City Council as Planning Integration and Innovation Specialist on the Long-Term Infrastructure Pipeline.",
+    tags: ["IntraMaps", "QGIS", "Fulcrum", "ArcGIS Online"],
+  },
+  {
+    year: "2024",
+    body: "Built and maintained the geodatabase and data pipeline behind Council's infrastructure planning — connecting Fulcrum field collection, ArcGIS Online and Power BI so engineering, planning and finance work from one reliable set of spatial information.",
+    tags: ["Power BI", "Geodatabase", "Power Automate", "SQL"],
   },
   {
     year: "2025",
-    body: "Replace with recent work — capital works transparency, accessibility scoring, data integrity practice.",
-    tags: ["Web GIS", "SQL", "Mapbox"],
+    body: "Extended the work into spatial prioritisation: a model combining demographic, spatial and cost data to rank capital works for budget submission, alongside public-facing capital works transparency and accessibility scoring.",
+    tags: ["Multi-Criteria Analysis", "Web GIS", "FME", "Python"],
   },
   {
     year: "2026",

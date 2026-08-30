@@ -87,6 +87,17 @@ export default async function ProjectPage({
           ) : null}
         </Reveal>
 
+        <Reveal delay={100}>
+          <figure className="mt-14 overflow-hidden rounded-2xl border border-hairline bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/projects/${project.slug}.png`}
+              alt={`${project.title} — dashboard screenshot`}
+              className="w-full"
+            />
+          </figure>
+        </Reveal>
+
         {/* Key insight, pulled up as the headline takeaway. */}
         <Reveal delay={120}>
           <blockquote className="mt-16 border-l-2 border-accent pl-6 md:pl-8">
