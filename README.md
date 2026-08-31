@@ -69,7 +69,7 @@ components/site/
   ambient-geometry.tsx        near-invisible wireframe layer behind the page
   hanging-profile.tsx         draggable pendulum card
   theme-toggle.tsx            light/dark switch + pre-paint init script
-  custom-cursor.tsx           trailing ring cursor
+  custom-cursor.tsx           expressive single-line cursor (four states)
   reveal.tsx                  IntersectionObserver fade-in
   lock-viewport.tsx           scopes the supplied viewport lock to /entropy
 components/ui/
@@ -209,6 +209,33 @@ Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 `/standalone/portfolio-hero.html`.
 
 ---
+
+## The cursor
+
+A single continuous line that trails the pointer and **changes shape to express
+what it is doing**. Four states, blended continuously rather than switched:
+
+| State | Trigger | Shape |
+|---|---|---|
+| idle | pointer at rest | slow rolling wave — the line breathing |
+| taut | moving fast | amplitude collapses, the line pulls straight |
+| curious | over anything clickable | tight high-frequency coil, head closes into a ring |
+| spike | mouse held down | wave snaps from sine to a hard triangle zigzag |
+
+Each trail point is displaced perpendicular to its local tangent by a waveform
+whose amplitude and frequency come from the blended state, so the *form* carries
+the mood rather than a colour or size swap. Measured painted-pixel counts at 465
+/ 1250 / 1228 for idle / curious / spike confirm the states are distinct.
+
+Drawn on a fixed canvas with `mix-blend-difference`, so it stays legible on both
+themes and over imagery. It augments the native cursor rather than hiding it —
+pointer affordances survive. Disabled on coarse pointers and under
+`prefers-reduced-motion`.
+
+> **On the reference.** This borrows the one-unbroken-stroke idiom of Cavandoli's
+> *La Linea* — an expressive line on a solid ground. It does **not** reproduce
+> the character, which is copyrighted. The idiom is not protectable; the figure
+> is, and this is a public professional site.
 
 ## Ambient geometry
 
