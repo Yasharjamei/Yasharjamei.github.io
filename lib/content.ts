@@ -17,6 +17,7 @@ export const nav = [
   { id: "process", label: "Process" },
   { id: "work", label: "Work" },
   { id: "roadmap", label: "Roadmap" },
+  { id: "capabilities", label: "Skills" },
   { id: "research", label: "Research" },
   { id: "play", label: "Play" },
   { id: "contact", label: "Contact" },

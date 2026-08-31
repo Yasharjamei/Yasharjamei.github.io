@@ -27,7 +27,7 @@ npm run dev
 
 | Route | What it is |
 |---|---|
-| `/` | The portfolio — hero, about, process, work, roadmap, capabilities, research, contact |
+| `/` | The portfolio — hero, about `[001]`, process `[002]`, work `[003]`, roadmap `[004]`, capabilities `[005]`, research `[006]`, play `[007]`, contact `[008]` |
 | `/work/<slug>` | Ten statically generated case-study pages, one per project |
 | `/entropy` | The original `Entropy` component on black, unmodified — reference implementation |
 | `/portfolio-hero` | Early hero-only preview in the old cream palette, kept for comparison |
@@ -37,6 +37,13 @@ npm run dev
 > and building against a live dev server corrupts it — `Cannot find module
 > './611.js'`, missing vendor chunks, blank pages. Stop dev first, or verify
 > against `npx serve out`, which tests the real deployable artifact anyway.
+
+> **Never bulk-edit source with PowerShell `Get-Content`.** On a UTF-8 file with
+> no BOM it falls back to the ANSI codepage; write that back as UTF-8 and every
+> non-ASCII character corrupts — `—` becomes `â€"`, `·` becomes `Â·`, `Ş` becomes
+> `Åž`. This shipped to production once, visible in the Roadmap lead. If a bulk
+> edit is unavoidable use `[System.IO.File]::ReadAllText` / `WriteAllText`, which
+> default to UTF-8, and grep for `â€`, `Â`, `Ã` before committing.
 
 ---
 

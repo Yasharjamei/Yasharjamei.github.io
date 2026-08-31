@@ -6,7 +6,7 @@ import { work } from '@/lib/content'
 import { asset } from '@/lib/paths'
 
 /**
- * Desktop: the section pins and the rail translates sideways as you scroll â€”
+ * Desktop: the section pins and the rail translates sideways as you scroll —
  * vertical scroll distance is mapped onto horizontal travel.
  * Below the breakpoint (or under reduced motion) it degrades to a normal
  * swipeable row, which is what a touch device wants anyway.
@@ -104,7 +104,7 @@ export function WorkGallery() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={asset(`/projects/${project.slug}.png`)}
-                    alt={`${project.title} â€” dashboard screenshot`}
+                    alt={`${project.title} — dashboard screenshot`}
                     loading="lazy"
                     decoding="async"
                     className="h-[170px] w-full object-cover object-top opacity-80 transition-opacity duration-300 group-hover:opacity-100"

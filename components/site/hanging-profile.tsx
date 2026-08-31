@@ -5,10 +5,10 @@ import { site } from '@/lib/content'
 
 /**
  * A profile card hanging from a rope, swinging as a real pendulum
- * (a = -g/L Â· sin Î¸) with light damping. Drag it and let go.
+ * (a = -g/L · sin θ) with light damping. Drag it and let go.
  *
  * Adapted from the `HangingProfile` widget in xkintaro/kintarowwwards
- * (MIT, Â© 2026 Mustafa TAÅžAL). Reworked for this site's tokens, with the
+ * (MIT, © 2026 Mustafa TAŞAL). Reworked for this site's tokens, with the
  * animation loop paused off-screen and under prefers-reduced-motion.
  */
 export function HangingProfile() {
