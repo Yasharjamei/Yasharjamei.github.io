@@ -266,14 +266,23 @@ engine, no third-party code or assets.
 | Input | Controls |
 |---|---|
 | Pointer + keyboard | WASD/arrows to move, mouse to aim, hold to fire |
-| Touch | drag anywhere to fly; auto-aims at the nearest shape and fires for you |
+| Touch | one thumb drags the canvas to fly, the other holds **FIRE**; aim is automatic |
 
-**Touch needed its own scheme, not a fallback.** The first version was
-keyboard-only for movement, which made it unplayable on a phone — there is no
-WASD. On a coarse pointer the ship now steers toward the finger and auto-fires,
-so one thumb is enough. The canvas also switches to `touch-action: none` *only
-while playing*, or iOS scrolls the page instead of moving the ship; before Start
-and after Game Over it stays `auto` so the section scrolls normally.
+**Touch needed its own scheme, not a fallback.** The first version bound movement
+to WASD, which made it unplayable on a phone — there is no keyboard. The ship now
+steers toward the finger, and firing is manual via an on-screen button. Aim stays
+automatic (nearest shape) because there is no second thumbstick to aim with.
+
+The fire button is a real DOM element rather than a canvas region, so the browser
+routes the two thumbs to separate targets and no multi-touch bookkeeping is
+needed. It deliberately does **not** call `setPointerCapture`: capture can be
+lost silently and leave the ship firing forever. Release is instead guarded at
+the window level on `pointerup`, `pointercancel` and `blur`, so no release path
+can strand the held state.
+
+The canvas switches to `touch-action: none` *only while playing*, or iOS scrolls
+the page instead of moving the ship; before Start and after Game Over it stays
+`auto` so the section scrolls normally.
 
 It sits after Research and before Contact, deliberately: it shows interactive
 build capability without competing with the case studies for a hiring manager's

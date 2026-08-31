@@ -65,6 +65,8 @@ export function VectorArena() {
   const runningRef = useRef(false)
   const scoreRef = useRef(0)
   const livesRef = useRef(MAX_LIVES)
+  // Held state of the on-screen fire button (touch only).
+  const firingRef = useRef(false)
 
   useEffect(() => {
     try {
@@ -133,6 +135,8 @@ export function VectorArena() {
       fireTimer = 0
       invuln = 0
       elapsed = 0
+      firingRef.current = false
+      drag.active = false
       scoreRef.current = 0
       livesRef.current = MAX_LIVES
       setScore(0)
@@ -257,7 +261,8 @@ export function VectorArena() {
 
       // ---- firing
       fireTimer -= dt * 1000
-      const wantsFire = isTouch ? enemies.length > 0 : mouse.down
+      // Touch fires from the on-screen button, never on its own.
+      const wantsFire = isTouch ? firingRef.current : mouse.down
       if (wantsFire && fireTimer <= 0) {
         fireTimer = FIRE_MS
         const a = Math.atan2(mouse.y - player.y, mouse.x - player.x)
@@ -511,6 +516,10 @@ export function VectorArena() {
     const onUp = () => {
       mouse.down = false
       drag.active = false
+      // Safety net for the fire button: if its own pointerup is ever missed —
+      // released off-target, gesture cancelled, pointer capture lost — the ship
+      // would otherwise fire forever.
+      firingRef.current = false
     }
     const onKey = (e: KeyboardEvent, down: boolean) => {
       const k = e.key.toLowerCase()
@@ -543,6 +552,8 @@ export function VectorArena() {
     canvas.addEventListener('pointermove', onMove, { passive: false })
     canvas.addEventListener('pointerdown', onDown, { passive: false })
     window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    window.addEventListener('blur', onUp)
     window.addEventListener('keydown', kd)
     window.addEventListener('keyup', ku)
 
@@ -563,6 +574,8 @@ export function VectorArena() {
       canvas.removeEventListener('pointermove', onMove)
       canvas.removeEventListener('pointerdown', onDown)
       window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+      window.removeEventListener('blur', onUp)
       window.removeEventListener('keydown', kd)
       window.removeEventListener('keyup', ku)
     }
@@ -593,7 +606,7 @@ export function VectorArena() {
           </div>
         </div>
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-secondary">
-          {touch ? 'Drag to move · auto-fire' : 'WASD move · mouse aim · hold to fire'}
+          {touch ? 'Drag to move · hold FIRE' : 'WASD move · mouse aim · hold to fire'}
         </p>
       </div>
 
@@ -605,6 +618,40 @@ export function VectorArena() {
           style={{ touchAction: running ? 'none' : 'auto' }}
           className="absolute inset-0 block cursor-crosshair"
         />
+
+        {/*
+          Touch fire control. A separate DOM element rather than a canvas
+          region, so the browser routes the two thumbs to different targets and
+          no multi-touch bookkeeping is needed: one drags the canvas, one holds
+          this. Aim stays automatic — there is no second stick to aim with.
+        */}
+        {touch && running ? (
+          <button
+            type="button"
+            aria-label="Fire"
+            // No setPointerCapture: the button only needs press and release,
+            // capture can be lost silently, and the window-level pointerup /
+            // pointercancel / blur guard already catches every release path.
+            onPointerDown={(e) => {
+              e.preventDefault()
+              firingRef.current = true
+            }}
+            onPointerUp={() => {
+              firingRef.current = false
+            }}
+            onPointerCancel={() => {
+              firingRef.current = false
+            }}
+            onPointerLeave={() => {
+              firingRef.current = false
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            style={{ touchAction: 'none' }}
+            className="absolute bottom-5 right-5 h-20 w-20 select-none rounded-full border-2 border-accent bg-accent/15 font-mono text-[11px] uppercase tracking-[0.16em] text-primary backdrop-blur-sm active:bg-accent/40"
+          >
+            Fire
+          </button>
+        ) : null}
 
         {!running ? (
           <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
@@ -619,7 +666,7 @@ export function VectorArena() {
               ) : (
                 <p className="mt-3 max-w-sm text-[14px] text-secondary">
                   Survive the shapes. Diamonds hunt you, squares ricochet.
-                  {touch ? ' Drag anywhere to fly — it fires for you.' : ''}
+                  {touch ? ' Drag with one thumb to fly, hold FIRE with the other.' : ''}
                 </p>
               )}
               <button
