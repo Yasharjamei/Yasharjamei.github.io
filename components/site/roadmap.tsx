@@ -7,7 +7,7 @@ export function Roadmap() {
   return (
     <Section id="roadmap" className="border-t border-hairline">
       <SectionHeader
-        index="004"
+        index="005"
         title="Roadmap"
         lead="The arc of the work â€” how the research, the tooling and the kinds of decisions I support have changed over time."
       />
