@@ -3,6 +3,7 @@ import { Noto_Sans } from "next/font/google";
 import { site } from "@/lib/content";
 import { themeInitScript } from "@/components/site/theme-toggle";
 import { CustomCursor } from "@/components/site/custom-cursor";
+import { AmbientGeometry } from "@/components/site/ambient-geometry";
 import "./globals.css";
 
 // Defines the --font-noto CSS variable that tailwind.config.ts maps to `font-sans`.
@@ -31,6 +32,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="font-sans antialiased">
+        <AmbientGeometry />
         <CustomCursor />
         {children}
       </body>

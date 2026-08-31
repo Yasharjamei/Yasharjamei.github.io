@@ -66,6 +66,7 @@ components/site/
   roadmap.tsx                 vertical timeline
   work-gallery.tsx            horizontal scroll rail of project cards
   vector-arena.tsx            original canvas twin-stick shooter (section 007)
+  ambient-geometry.tsx        near-invisible wireframe layer behind the page
   hanging-profile.tsx         draggable pendulum card
   theme-toggle.tsx            light/dark switch + pre-paint init script
   custom-cursor.tsx           trailing ring cursor
@@ -208,6 +209,27 @@ Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 `/standalone/portfolio-hero.html`.
 
 ---
+
+## Ambient geometry
+
+Seven large wireframe polygons drifting on a fixed layer at `-z-10`, stroked in
+`--foreground` at **3.5%** opacity. Opaque cards occlude them, so they only read
+in the gaps between content — texture, not decoration.
+
+Two rules keep it from becoming noise:
+
+- **It fades to zero while the hero is on screen.** The entropy field is the
+  site's signature generative element; a second particle system competing in the
+  same viewport would dilute it. An `IntersectionObserver` on `#home` drives an
+  eased fade, verified at 0 painted pixels over the hero and ~23k at the roadmap.
+- **It never runs under `prefers-reduced-motion`**, and pauses on tab hide.
+
+No dependency — about 150 lines of canvas. Stroke colour resolves from the theme
+token via a `MutationObserver` on `data-theme`.
+
+> The original suggestion was [miurla/morphic](https://github.com/miurla/morphic).
+> That project is an AI answer engine built on the Vercel AI SDK — unrelated to
+> generative geometry, so it would not have helped here.
 
 ## Vector Arena (section 007)
 
