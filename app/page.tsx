@@ -6,6 +6,7 @@ import {
   About,
   Capabilities,
   Contact,
+  Play,
   Process,
   Research,
   Work,
@@ -24,6 +25,7 @@ export default function Home() {
         <Roadmap />
         <Capabilities />
         <Research />
+        <Play />
         <Contact />
       </main>
     </>

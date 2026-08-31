@@ -2,6 +2,7 @@ import { Section, SectionHeader } from './section'
 import { Reveal } from './reveal'
 import { HangingProfile } from './hanging-profile'
 import { WorkGallery } from './work-gallery'
+import { VectorArena } from './vector-arena'
 import { capabilities, process, research, site } from '@/lib/content'
 
 export function About() {
@@ -181,11 +182,30 @@ export function Research() {
   )
 }
 
+export function Play() {
+  return (
+    <Section id="play" className="border-t border-hairline">
+      <SectionHeader
+        index="007"
+        title="Try this game"
+        lead={
+          <>
+            Off-duty. A twin-stick shooter built from scratch on a 2D canvas &mdash; same
+            particle-and-vector approach as the field up top, pointed at something{' '}
+            <em className="font-serif italic text-primary">less serious</em>.
+          </>
+        }
+      />
+      <VectorArena />
+    </Section>
+  )
+}
+
 export function Contact() {
   return (
     <Section id="contact" className="border-t border-hairline">
       <Reveal>
-        <p className="eyebrow">[007]</p>
+        <p className="eyebrow">[008]</p>
         <h2 className="display mt-5 text-[clamp(38px,8vw,96px)] text-primary">
           Have a spatial
           <br />

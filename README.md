@@ -58,6 +58,7 @@ components/site/
   sections.tsx                about / process / work / capabilities / research / contact
   roadmap.tsx                 vertical timeline
   work-gallery.tsx            horizontal scroll rail of project cards
+  vector-arena.tsx            original canvas twin-stick shooter (section 007)
   hanging-profile.tsx         draggable pendulum card
   theme-toggle.tsx            light/dark switch + pre-paint init script
   custom-cursor.tsx           trailing ring cursor
@@ -200,6 +201,31 @@ Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 `/standalone/portfolio-hero.html`.
 
 ---
+
+## Vector Arena (section 007)
+
+A twin-stick shooter written from scratch in TypeScript on a 2D canvas — no game
+engine, no third-party code or assets. WASD to move, mouse to aim, hold to fire.
+
+It sits after Research and before Contact, deliberately: it shows interactive
+build capability without competing with the case studies for a hiring manager's
+attention.
+
+The loop only runs after the player presses Start, and an `IntersectionObserver`
+pauses it when the section scrolls out of view, so it costs nothing to someone
+passing by. Colours resolve from theme tokens through `getComputedStyle`, so it
+follows the light/dark toggle. Best score goes to `localStorage`, wrapped in
+try/catch for private mode.
+
+> **Why not the linked repo.** The original request was to embed
+> [Shaptic/Geometry-Wars](https://github.com/Shaptic/Geometry-Wars). That project
+> is native C/C++ on SDL, targeting Windows — the repo ships a `vcredist_x86.exe`.
+> It is desktop software and cannot run in a page. Its licence is permissive
+> (zlib-style, embedding allowed with acknowledgment), so the barrier was purely
+> technical: putting it on the web would mean an Emscripten/WebAssembly port of
+> 14-year-old SDL 1.2-era code plus ~27 MB of assets, with a low chance of
+> success. Building an original one was faster, lighter and carries no
+> attribution obligation.
 
 ## Design language
 
