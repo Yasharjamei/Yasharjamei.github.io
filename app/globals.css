@@ -247,44 +247,6 @@ body {
   }
 }
 
-/* Leaflet, themed. Its defaults assume a light chrome and a #ddd backdrop. */
-.leaflet-container {
-  background: var(--elevated);
-  font-family: inherit;
-}
-
-.leaflet-control-attribution {
-  background: color-mix(in srgb, var(--background) 82%, transparent) !important;
-  color: var(--text-secondary) !important;
-  font-size: 10px !important;
-}
-
-.leaflet-control-attribution a {
-  color: var(--text-secondary) !important;
-}
-
-.leaflet-bar a {
-  background: var(--background) !important;
-  color: var(--text-primary) !important;
-  border-color: var(--hairline) !important;
-}
-
-.leaflet-bar a:hover {
-  background: var(--elevated) !important;
-}
-
-.leaflet-tooltip {
-  background: var(--background) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--hairline) !important;
-  box-shadow: none !important;
-  font-size: 11px !important;
-}
-
-.leaflet-tooltip-top::before {
-  border-top-color: var(--hairline) !important;
-}
-
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

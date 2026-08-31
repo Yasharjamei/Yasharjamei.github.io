@@ -6,7 +6,6 @@ import {
   About,
   Capabilities,
   Contact,
-  LiveTool,
   Process,
   Research,
   Work,
@@ -22,7 +21,6 @@ export default function Home() {
         <About />
         <Process />
         <Work />
-        <LiveTool />
         <Roadmap />
         <Capabilities />
         <Research />

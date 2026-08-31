@@ -2,7 +2,6 @@ import { Section, SectionHeader } from './section'
 import { Reveal } from './reveal'
 import { HangingProfile } from './hanging-profile'
 import { WorkGallery } from './work-gallery'
-import { CatchmentMap } from './catchment-map'
 import { capabilities, process, research, site } from '@/lib/content'
 
 export function About() {
@@ -103,27 +102,6 @@ export function Work() {
   )
 }
 
-export function LiveTool() {
-  return (
-    <Section id="tool" className="border-t border-hairline">
-      <SectionHeader
-        index="004"
-        title="Try the analysis"
-        lead={
-          <>
-            Most portfolios describe spatial work. This one runs it. Drop an origin anywhere in
-            Melton and the tool reports what daily needs fall inside the walk catchment &mdash; the
-            same question behind the{' '}
-            <em className="font-serif italic text-primary">20-Minute Neighbourhood</em> case study,
-            computed live in your browser.
-          </>
-        }
-      />
-      <CatchmentMap />
-    </Section>
-  )
-}
-
 export function Capabilities() {
   return (
     <Section id="capabilities" className="border-t border-hairline">
@@ -207,7 +185,7 @@ export function Contact() {
   return (
     <Section id="contact" className="border-t border-hairline">
       <Reveal>
-        <p className="eyebrow">[008]</p>
+        <p className="eyebrow">[007]</p>
         <h2 className="display mt-5 text-[clamp(38px,8vw,96px)] text-primary">
           Have a spatial
           <br />

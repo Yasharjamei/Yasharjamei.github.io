@@ -58,7 +58,6 @@ components/site/
   sections.tsx                about / process / work / capabilities / research / contact
   roadmap.tsx                 vertical timeline
   work-gallery.tsx            horizontal scroll rail of project cards
-  catchment-map.tsx           live 20-minute-neighbourhood access tool (Leaflet)
   hanging-profile.tsx         draggable pendulum card
   theme-toggle.tsx            light/dark switch + pre-paint init script
   custom-cursor.tsx           trailing ring cursor
@@ -74,7 +73,6 @@ lib/
   utils.ts                    shadcn cn() helper
 public/
   projects/<slug>.png         case-study screenshots, keyed by slug
-  data/melton-amenities.geojson  344 OSM features, Melton VIC (ODbL)
   standalone/                 zero-dependency vanilla port of the field
   .nojekyll                   stops GitHub Pages from eating _next/
 scripts/make-zip.ps1          Netlify bundle builder
@@ -202,32 +200,6 @@ Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 `/standalone/portfolio-hero.html`.
 
 ---
-
-## The live catchment tool
-
-Section `[004]` runs a real analysis rather than describing one. Drop an origin
-in Melton, pick a walk time, and it reports which daily-needs destinations fall
-inside the catchment, broken down by category.
-
-**Data is open, not council-held.** 344 features pulled from OpenStreetMap via
-the Overpass API (schools, parks, supermarkets, health, bus stops, stations,
-library) for the Melton area, baked to `public/data/melton-amenities.geojson`
-(47 KB) and attributed under ODbL. Nothing restricted is exposed.
-
-**The method is stated honestly in the UI.** It computes a *straight-line*
-catchment. Real assessments use network distance over the walkable path graph,
-which is always smaller and irregular — a creek or freeway can put a park 200 m
-away and 15 minutes distant. The panel says this rather than implying a network
-isochrone. It also uses 800 m as the default, because Victorian policy frames
-the 20-minute neighbourhood as a **return** trip: 10 minutes each way.
-
-Basemap is CARTO dark/light, swapped by a `MutationObserver` on `data-theme` so
-it follows the theme toggle. Leaflet is imported dynamically, so it stays out of
-the initial bundle.
-
-To refresh or re-scope the data, re-run the Overpass query with a different
-bounding box — note that Overpass rejects the default PowerShell user agent with
-`406 Not Acceptable`, so a `User-Agent` header is required.
 
 ## Design language
 
