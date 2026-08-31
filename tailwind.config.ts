@@ -15,12 +15,15 @@ export default {
         secondary: "var(--text-secondary)",
         hairline: "var(--hairline)",
         accent: "var(--accent)",
+        // Theme-aware hover/raised surface. Never hardcode a hover colour:
+        // a literal like #111111 is invisible under dark text in light mode.
+        elevated: "var(--elevated)",
       },
       fontFamily: {
         sans: ['var(--font-noto)'],
       },
       maxWidth: {
-        shell: "1240px",
+        shell: "1440px",
       },
     },
   },

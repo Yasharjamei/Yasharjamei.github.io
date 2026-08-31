@@ -62,22 +62,31 @@
   --background: #0a0a0a;
   --foreground: #fafafa;
   --text-primary: #fafafa;
-  --text-secondary: #a1a1a1;
-  --hairline: #1f1f1f;
-  --accent: #b36d4d;
+  --text-secondary: #b8b8b8;
+  --hairline: #2a2a2a;
+  --elevated: #181818;
+  --accent: #d08a63;
   --field-order: #fafafa;
-  --field-chaos: #b36d4d;
+  --field-chaos: #d08a63;
 }
 
+/*
+ * Secondary text and hover washes are chosen by measured WCAG ratio, not by eye.
+ * Dark:  #b8b8b8 on #0a0a0a = 9.98:1, and 8.95:1 over the hover wash.
+ * Light: #4f4c46 on #f6f3ee = 7.73:1, and 6.87:1 over the hover wash.
+ * The previous values sat at 7.66 / 4.95, and light dipped to 4.48 on hover —
+ * under the 4.5 AA floor.
+ */
 :root[data-theme="dark"] {
   --background: #0a0a0a;
   --foreground: #fafafa;
   --text-primary: #fafafa;
-  --text-secondary: #a1a1a1;
-  --hairline: #1f1f1f;
-  --accent: #b36d4d;
+  --text-secondary: #b8b8b8;
+  --hairline: #2a2a2a;
+  --elevated: #181818;
+  --accent: #d08a63;
   --field-order: #fafafa;
-  --field-chaos: #b36d4d;
+  --field-chaos: #d08a63;
 }
 
 /* Light mode keeps the original warm portfolio identity rather than
@@ -86,8 +95,9 @@
   --background: #f6f3ee;
   --foreground: #171717;
   --text-primary: #171717;
-  --text-secondary: #6c6962;
-  --hairline: #ded8ce;
+  --text-secondary: #4f4c46;
+  --hairline: #d6cfc3;
+  --elevated: #e9e6e1;
   --accent: #7b5b3a;
   --field-order: #202825;
   --field-chaos: #b36d4d;

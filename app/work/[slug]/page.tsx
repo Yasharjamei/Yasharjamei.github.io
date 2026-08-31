@@ -89,7 +89,7 @@ export default async function ProjectPage({
         </Reveal>
 
         <Reveal delay={100}>
-          <figure className="mt-14 overflow-hidden rounded-2xl border border-hairline bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
+          <figure className="mt-14 overflow-hidden rounded-2xl border border-hairline bg-elevated">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={asset(`/projects/${project.slug}.png`)}
@@ -161,7 +161,7 @@ export default async function ProjectPage({
         <Reveal>
           <Link
             href={`/work/${next.slug}`}
-            className="group mt-28 flex flex-col gap-3 border-t border-hairline pt-10 transition-colors hover:bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)] md:flex-row md:items-end md:justify-between"
+            className="group mt-20 flex flex-col gap-3 border-t border-hairline pt-8 transition-colors hover:bg-elevated md:flex-row md:items-end md:justify-between"
           >
             <div>
               <span className="eyebrow">Next project</span>

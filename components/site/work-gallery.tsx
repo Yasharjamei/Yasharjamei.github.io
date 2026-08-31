@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
@@ -6,7 +6,7 @@ import { work } from '@/lib/content'
 import { asset } from '@/lib/paths'
 
 /**
- * Desktop: the section pins and the rail translates sideways as you scroll —
+ * Desktop: the section pins and the rail translates sideways as you scroll â€”
  * vertical scroll distance is mapped onto horizontal travel.
  * Below the breakpoint (or under reduced motion) it degrades to a normal
  * swipeable row, which is what a touch device wants anyway.
@@ -90,7 +90,7 @@ export function WorkGallery() {
             <Link
               key={project.slug}
               href={`/work/${project.slug}`}
-              className="group flex w-[300px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-hairline p-6 transition-colors duration-300 hover:border-primary/50 hover:bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)] sm:w-[360px] lg:h-[520px] lg:w-[420px]"
+              className="group flex w-[300px] shrink-0 snap-start flex-col justify-between rounded-2xl border border-hairline p-6 transition-colors duration-300 hover:border-primary/50 hover:bg-elevated sm:w-[360px] lg:h-[520px] lg:w-[420px]"
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -104,7 +104,7 @@ export function WorkGallery() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={asset(`/projects/${project.slug}.png`)}
-                    alt={`${project.title} — dashboard screenshot`}
+                    alt={`${project.title} â€” dashboard screenshot`}
                     loading="lazy"
                     decoding="async"
                     className="h-[170px] w-full object-cover object-top opacity-80 transition-opacity duration-300 group-hover:opacity-100"
@@ -114,7 +114,7 @@ export function WorkGallery() {
                 <h3 className="display mt-5 text-[clamp(20px,2.2vw,26px)] text-primary">
                   {project.title}
                 </h3>
-                <p className="mt-3 line-clamp-3 text-[14px] font-light leading-relaxed text-secondary">
+                <p className="mt-3 line-clamp-3 text-[14px] font-normal leading-relaxed text-secondary">
                   {project.summary}
                 </p>
               </div>

@@ -1,14 +1,14 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef } from 'react'
 import { site } from '@/lib/content'
 
 /**
  * A profile card hanging from a rope, swinging as a real pendulum
- * (a = -g/L · sin θ) with light damping. Drag it and let go.
+ * (a = -g/L Â· sin Î¸) with light damping. Drag it and let go.
  *
  * Adapted from the `HangingProfile` widget in xkintaro/kintarowwwards
- * (MIT, © 2026 Mustafa TAŞAL). Reworked for this site's tokens, with the
+ * (MIT, Â© 2026 Mustafa TAÅžAL). Reworked for this site's tokens, with the
  * animation loop paused off-screen and under prefers-reduced-motion.
  */
 export function HangingProfile() {
@@ -180,9 +180,9 @@ export function HangingProfile() {
         ref={cardRef}
         onPointerDown={onPointerDown}
         style={{ left: '50%', marginLeft: '-70px', transformOrigin: 'center top', touchAction: 'none' }}
-        className="group absolute top-0 flex w-[140px] cursor-grab select-none flex-col items-center rounded-2xl border border-hairline bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)] p-4 backdrop-blur-md transition-colors duration-300 hover:border-primary/40"
+        className="group absolute top-0 flex w-[140px] cursor-grab select-none flex-col items-center rounded-2xl border border-hairline bg-elevated p-4 backdrop-blur-md transition-colors duration-300 hover:border-primary/40"
       >
-        <div className="pointer-events-none mb-3 flex h-20 w-20 items-center justify-center rounded-full border border-hairline bg-[color-mix(in_srgb,var(--foreground)_6%,transparent)]">
+        <div className="pointer-events-none mb-3 flex h-20 w-20 items-center justify-center rounded-full border border-hairline bg-elevated">
           <span className="font-black tracking-[0.08em] text-[22px] text-primary/70 transition-colors duration-300 group-hover:text-primary">
             {initials}
           </span>

@@ -20,7 +20,7 @@ export function About() {
         }
       />
 
-      <div className="mt-14 grid items-start gap-10 border-t border-hairline pt-12 lg:grid-cols-[1.4fr_auto] lg:gap-16">
+      <div className="mt-10 grid items-start gap-10 border-t border-hairline pt-10 lg:grid-cols-[1.4fr_auto] lg:gap-16">
         <Reveal delay={120}>
           <div className="grid gap-10 md:grid-cols-2 md:gap-12">
             <p className="display text-[clamp(24px,3.2vw,40px)] text-primary">
@@ -57,15 +57,15 @@ export function Process() {
         lead="Six moves, from an unclear problem to advice someone can act on."
       />
 
-      <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
         {process.map((step, i) => (
           <Reveal key={step.n} delay={i * 60}>
-            <div className="h-full bg-background p-8 transition-colors duration-300 hover:bg-[#111111]">
+            <div className="h-full bg-background p-6 md:p-7 transition-colors duration-300 hover:bg-elevated">
               <span className="font-mono text-[11px] tracking-[0.28em] text-secondary">
                 {step.n}
               </span>
               <h3 className="display mt-6 text-[26px] text-primary">{step.title}</h3>
-              <p className="mt-3 text-[15px] font-light leading-relaxed text-secondary">
+              <p className="mt-3 text-[15px] font-normal leading-relaxed text-secondary">
                 {step.body}
               </p>
             </div>
@@ -79,7 +79,7 @@ export function Process() {
 export function Work() {
   return (
     // Not <Section>: the gallery is full-bleed, so only the header is shelled.
-    <section id="work" className="border-t border-hairline py-24 md:py-32">
+    <section id="work" className="border-t border-hairline py-14 md:py-20">
       <div className="mx-auto max-w-shell px-6 md:px-10">
         <SectionHeader
           index="003"
@@ -111,7 +111,7 @@ export function Capabilities() {
         lead="The technical and strategic ground the work stands on."
       />
 
-      <div className="mt-14 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-10 grid gap-12 md:grid-cols-2 lg:grid-cols-4">
         {capabilities.map((group, i) => (
           <Reveal key={group.group} delay={i * 80}>
             <div className="border-t border-hairline pt-6">
@@ -120,7 +120,7 @@ export function Capabilities() {
                 {group.items.map((item) => (
                   <li
                     key={item}
-                    className="text-[15px] font-light text-secondary transition-colors duration-200 hover:text-primary"
+                    className="text-[15px] font-normal text-secondary transition-colors duration-200 hover:text-primary"
                   >
                     {item}
                   </li>
@@ -143,14 +143,14 @@ export function Research() {
         lead="Peer-reviewed work in urban climate, greening, land surface temperature, land-use change, remote sensing and spatial analytics."
       />
 
-      <div className="mt-14 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-hairline bg-hairline md:grid-cols-2 lg:grid-cols-3">
         {research.map((paper, i) => (
           <Reveal key={paper.title} delay={i * 60}>
             <a
               href={paper.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="group flex h-full flex-col bg-background p-8 transition-colors duration-300 hover:bg-[color-mix(in_srgb,var(--foreground)_5%,transparent)]"
+              className="group flex h-full flex-col bg-background p-6 md:p-7 transition-colors duration-300 hover:bg-elevated"
             >
               <div className="flex items-baseline justify-between gap-4">
                 <h3 className="text-[18px] font-semibold leading-snug text-primary">
@@ -160,7 +160,7 @@ export function Research() {
                   {paper.year}
                 </span>
               </div>
-              <p className="mt-4 flex-1 text-[15px] font-light leading-relaxed text-secondary">
+              <p className="mt-4 flex-1 text-[15px] font-normal leading-relaxed text-secondary">
                 {paper.body}
               </p>
               <p className="mt-5 font-serif text-[13px] italic text-secondary">{paper.journal}</p>
@@ -196,7 +196,7 @@ export function Contact() {
       </Reveal>
 
       <Reveal delay={120}>
-        <div className="mt-12 flex flex-wrap items-center gap-4">
+        <div className="mt-10 flex flex-wrap items-center gap-4">
           <a
             href={`mailto:${site.email}`}
             className="pill bg-primary text-background hover:bg-primary/85"
@@ -223,7 +223,7 @@ export function Contact() {
         </div>
       </Reveal>
 
-      <div className="mt-24 flex flex-col gap-3 border-t border-hairline pt-8 text-[12px] uppercase tracking-[0.2em] text-secondary sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-16 flex flex-col gap-3 border-t border-hairline pt-8 text-[12px] uppercase tracking-[0.2em] text-secondary sm:flex-row sm:items-center sm:justify-between">
         <span>&copy; {new Date().getFullYear()} {site.name}</span>
         <span className="font-mono normal-case tracking-normal">
           GIS &middot; Spatial Analysis &middot; Urban Planning

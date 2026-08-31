@@ -9,10 +9,10 @@ export function Roadmap() {
       <SectionHeader
         index="004"
         title="Roadmap"
-        lead="The arc of the work — how the research, the tooling and the kinds of decisions I support have changed over time."
+        lead="The arc of the work â€” how the research, the tooling and the kinds of decisions I support have changed over time."
       />
 
-      <div className="relative mt-16 pl-8 md:pl-16">
+      <div className="relative mt-12 pl-8 md:pl-16">
         {/* the spine */}
         <span
           aria-hidden="true"
@@ -29,7 +29,7 @@ export function Roadmap() {
                     aria-hidden="true"
                     className="absolute -left-8 top-8 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-accent ring-4 ring-background md:-left-12"
                   />
-                  <div className="relative overflow-hidden rounded-xl border border-hairline p-8 transition-colors duration-300 hover:bg-[color-mix(in_srgb,var(--foreground)_4%,transparent)]">
+                  <div className="relative overflow-hidden rounded-xl border border-hairline p-6 md:p-7 transition-colors duration-300 hover:bg-elevated">
                     {/* oversized ghost year */}
                     <span
                       aria-hidden="true"
@@ -41,7 +41,7 @@ export function Roadmap() {
                     <p className="font-serif text-[34px] italic leading-none text-primary">
                       {entry.year}
                     </p>
-                    <p className="mt-5 max-w-2xl text-[16px] font-light leading-relaxed text-secondary">
+                    <p className="mt-5 max-w-2xl text-[16px] font-normal leading-relaxed text-secondary">
                       {entry.body}
                     </p>
                     <ul className="mt-6 flex flex-wrap gap-2">

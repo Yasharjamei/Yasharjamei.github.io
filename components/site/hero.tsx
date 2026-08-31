@@ -4,8 +4,8 @@ import { site } from '@/lib/content'
 
 export function Hero() {
   return (
-    <section id="home" className="relative min-h-[100svh] px-6 pb-20 pt-32 md:px-10 md:pt-40">
-      <div className="mx-auto grid max-w-shell items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+    <section id="home" className="relative min-h-[100svh] px-6 pb-20 pt-28 md:px-10 md:pt-32">
+      <div className="mx-auto grid max-w-shell items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
         <div>
           <Reveal>
             <p className="eyebrow">{site.role}</p>
