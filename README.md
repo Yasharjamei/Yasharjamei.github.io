@@ -52,7 +52,7 @@ npm run dev
 ```
 app/
   page.tsx                    composes the sections
-  layout.tsx                  data-theme, --font-noto, theme-init script, cursor
+  layout.tsx                  data-theme, --font-noto, theme-init, cursor, ambient layer
   globals.css                 theme tokens, display/eyebrow/pill classes, reveal
   work/[slug]/page.tsx        case-study pages (generateStaticParams)
   entropy/page.tsx            original Entropy demo (viewport-locked)
@@ -62,7 +62,7 @@ components/site/
   hero.tsx                    display type + entropy field
   marquee.tsx                 full-bleed ticker
   section.tsx                 numbered section header + shell
-  sections.tsx                about / process / work / capabilities / research / contact
+  sections.tsx                about / process / work / capabilities / research / play / contact
   roadmap.tsx                 vertical timeline
   work-gallery.tsx            horizontal scroll rail of project cards
   vector-arena.tsx            original canvas twin-stick shooter (section 007)
@@ -261,7 +261,19 @@ token via a `MutationObserver` on `data-theme`.
 ## Vector Arena (section 007)
 
 A twin-stick shooter written from scratch in TypeScript on a 2D canvas — no game
-engine, no third-party code or assets. WASD to move, mouse to aim, hold to fire.
+engine, no third-party code or assets.
+
+| Input | Controls |
+|---|---|
+| Pointer + keyboard | WASD/arrows to move, mouse to aim, hold to fire |
+| Touch | drag anywhere to fly; auto-aims at the nearest shape and fires for you |
+
+**Touch needed its own scheme, not a fallback.** The first version was
+keyboard-only for movement, which made it unplayable on a phone — there is no
+WASD. On a coarse pointer the ship now steers toward the finger and auto-fires,
+so one thumb is enough. The canvas also switches to `touch-action: none` *only
+while playing*, or iOS scrolls the page instead of moving the ship; before Start
+and after Game Over it stays `auto` so the section scrolls normally.
 
 It sits after Research and before Contact, deliberately: it shows interactive
 build capability without competing with the case studies for a hiring manager's
@@ -424,6 +436,12 @@ of that if load time matters.
   it, but it is worth knowing about.
 - The horizontal work rail pins only at `≥1024px` and with motion allowed;
   otherwise it degrades to a swipeable row.
+- **Anything keyboard-driven needs a touch path.** The game shipped unplayable on
+  phones because movement was WASD-only. Test interactive work at
+  `pointer: coarse`, not just at a narrow viewport — a small window still has a
+  keyboard and hides this class of bug entirely.
+- The cursor, the ambient layer and the pendulum are all pointer/motion gated:
+  none render on coarse pointers or under `prefers-reduced-motion`.
 
 ---
 
@@ -431,17 +449,28 @@ of that if load time matters.
 
 The `Entropy` component originates from a third-party snippet.
 
-`components/site/hanging-profile.tsx` and `components/site/custom-cursor.tsx` are
-adapted from [xkintaro/kintarowwwards](https://github.com/xkintaro/kintarowwwards),
-used under the MIT Licence:
+`components/site/hanging-profile.tsx` is adapted from
+[xkintaro/kintarowwwards](https://github.com/xkintaro/kintarowwwards), used under
+the MIT Licence:
 
 ```
 MIT License
 Copyright (c) 2026 Mustafa TAŞAL (kintaro)
 ```
 
-Both were reworked for this site's tokens and reimplemented without
-framer-motion. No content, imagery or copy from that project is used here.
+It was reworked for this site's tokens and reimplemented without framer-motion.
+No content, imagery or copy from that project is used here.
+
+`custom-cursor.tsx` **no longer derives from it.** It began as an adaptation of
+that project's ring cursor, but was rewritten from scratch as the expressive
+single-line cursor described above and now shares no code with it. The visual
+idea references Cavandoli's *La Linea*; the copyrighted character is not
+reproduced.
+
+`components/site/vector-arena.tsx` is original. It is inspired by the twin-stick
+genre popularised by *Geometry Wars* but contains no code or assets from
+[Shaptic/Geometry-Wars](https://github.com/Shaptic/Geometry-Wars) or any other
+project.
 
 The portfolio, its content, the vanilla port and the entropy field adaptation are
 mine.

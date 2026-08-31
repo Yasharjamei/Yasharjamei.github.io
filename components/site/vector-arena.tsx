@@ -54,6 +54,12 @@ export function VectorArena() {
   const [score, setScore] = useState(0)
   const [best, setBest] = useState(0)
   const [lives, setLives] = useState(MAX_LIVES)
+  // Touch devices have no keyboard, so they get drag-to-move plus auto-fire.
+  const [touch, setTouch] = useState(false)
+
+  useEffect(() => {
+    setTouch(window.matchMedia('(pointer: coarse)').matches)
+  }, [])
 
   // Mirrors of state the loop reads without re-subscribing.
   const runningRef = useRef(false)
@@ -87,8 +93,11 @@ export function VectorArena() {
     let elapsed = 0
     let onScreen = false
 
+    const isTouch = window.matchMedia('(pointer: coarse)').matches
     const player = { x: 0, y: 0, vx: 0, vy: 0 }
     const mouse = { x: 0, y: 0, down: false }
+    // Where the finger is steering the ship on a touch device.
+    const drag = { x: 0, y: 0, active: false }
     const keys = new Set<string>()
     let bullets: Bullet[] = []
     let enemies: Enemy[] = []
@@ -199,12 +208,27 @@ export function VectorArena() {
       elapsed += dt
 
       // ---- player movement
-      const ax =
-        (keys.has('d') || keys.has('arrowright') ? 1 : 0) -
-        (keys.has('a') || keys.has('arrowleft') ? 1 : 0)
-      const ay =
-        (keys.has('s') || keys.has('arrowdown') ? 1 : 0) -
-        (keys.has('w') || keys.has('arrowup') ? 1 : 0)
+      let ax = 0
+      let ay = 0
+      if (isTouch) {
+        // Steer toward the finger. Dead zone stops jitter when it is nearly there.
+        if (drag.active) {
+          const dx = drag.x - player.x
+          const dy = drag.y - player.y
+          const d = Math.hypot(dx, dy)
+          if (d > 6) {
+            ax = dx / d
+            ay = dy / d
+          }
+        }
+      } else {
+        ax =
+          (keys.has('d') || keys.has('arrowright') ? 1 : 0) -
+          (keys.has('a') || keys.has('arrowleft') ? 1 : 0)
+        ay =
+          (keys.has('s') || keys.has('arrowdown') ? 1 : 0) -
+          (keys.has('w') || keys.has('arrowup') ? 1 : 0)
+      }
       const mag = Math.hypot(ax, ay) || 1
       player.vx += (ax / mag) * 2400 * dt
       player.vy += (ay / mag) * 2400 * dt
@@ -213,9 +237,28 @@ export function VectorArena() {
       player.x = Math.max(PLAYER_R, Math.min(w - PLAYER_R, player.x + player.vx * dt))
       player.y = Math.max(PLAYER_R, Math.min(h - PLAYER_R, player.y + player.vy * dt))
 
+      // ---- aiming
+      // Touch has no second stick, so the ship auto-aims at the nearest enemy.
+      if (isTouch) {
+        let best: Enemy | null = null
+        let bestD = Infinity
+        for (const e of enemies) {
+          const d = Math.hypot(e.x - player.x, e.y - player.y)
+          if (d < bestD) {
+            bestD = d
+            best = e
+          }
+        }
+        if (best) {
+          mouse.x = best.x
+          mouse.y = best.y
+        }
+      }
+
       // ---- firing
       fireTimer -= dt * 1000
-      if (mouse.down && fireTimer <= 0) {
+      const wantsFire = isTouch ? enemies.length > 0 : mouse.down
+      if (wantsFire && fireTimer <= 0) {
         fireTimer = FIRE_MS
         const a = Math.atan2(mouse.y - player.y, mouse.x - player.x)
         bullets.push({
@@ -434,17 +477,40 @@ export function VectorArena() {
 
     const onMove = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect()
-      mouse.x = e.clientX - r.left
-      mouse.y = e.clientY - r.top
+      const x = e.clientX - r.left
+      const y = e.clientY - r.top
+      if (isTouch) {
+        if (drag.active) {
+          drag.x = x
+          drag.y = y
+          // Stop the page scrolling out from under the player mid-game.
+          if (runningRef.current && e.cancelable) e.preventDefault()
+        }
+      } else {
+        mouse.x = x
+        mouse.y = y
+      }
     }
     const onDown = (e: PointerEvent) => {
       if (!runningRef.current) return
-      mouse.down = true
-      onMove(e)
+      const r = canvas.getBoundingClientRect()
+      const x = e.clientX - r.left
+      const y = e.clientY - r.top
+      if (isTouch) {
+        drag.active = true
+        drag.x = x
+        drag.y = y
+        if (e.cancelable) e.preventDefault()
+      } else {
+        mouse.down = true
+        mouse.x = x
+        mouse.y = y
+      }
       canvas.setPointerCapture(e.pointerId)
     }
     const onUp = () => {
       mouse.down = false
+      drag.active = false
     }
     const onKey = (e: KeyboardEvent, down: boolean) => {
       const k = e.key.toLowerCase()
@@ -473,8 +539,9 @@ export function VectorArena() {
     )
     io.observe(wrap)
 
-    canvas.addEventListener('pointermove', onMove)
-    canvas.addEventListener('pointerdown', onDown)
+    // Non-passive: touch play needs preventDefault to stop the page scrolling.
+    canvas.addEventListener('pointermove', onMove, { passive: false })
+    canvas.addEventListener('pointerdown', onDown, { passive: false })
     window.addEventListener('pointerup', onUp)
     window.addEventListener('keydown', kd)
     window.addEventListener('keyup', ku)
@@ -526,12 +593,18 @@ export function VectorArena() {
           </div>
         </div>
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-secondary">
-          WASD move &middot; mouse aim &middot; hold to fire
+          {touch ? 'Drag to move · auto-fire' : 'WASD move · mouse aim · hold to fire'}
         </p>
       </div>
 
       <div ref={wrapRef} className="relative h-[380px] w-full select-none md:h-[480px]">
-        <canvas ref={canvasRef} className="absolute inset-0 block cursor-crosshair" />
+        <canvas
+          ref={canvasRef}
+          // While playing on touch, the canvas must own the gesture or iOS
+          // scrolls the page instead of moving the ship.
+          style={{ touchAction: running ? 'none' : 'auto' }}
+          className="absolute inset-0 block cursor-crosshair"
+        />
 
         {!running ? (
           <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
@@ -546,6 +619,7 @@ export function VectorArena() {
               ) : (
                 <p className="mt-3 max-w-sm text-[14px] text-secondary">
                   Survive the shapes. Diamonds hunt you, squares ricochet.
+                  {touch ? ' Drag anywhere to fly — it fires for you.' : ''}
                 </p>
               )}
               <button
