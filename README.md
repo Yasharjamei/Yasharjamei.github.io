@@ -330,6 +330,105 @@ tokens via `getComputedStyle` plus a `MutationObserver` on `data-theme`.
 
 ---
 
+## Development tooling
+
+Installed alongside the site as part of the wider build environment. **None of
+it lives in this repo**, deliberately: `tsconfig.json` includes `**/*.ts`, so a
+cloned TypeScript project inside the site would be type-checked by
+`npm run build` and break the Pages deploy. Everything sits in a sibling folder:
+
+```
+D:\Yashar projects\CLAUDE PROJECT\
+  Website design\      ← this repo (the portfolio)
+  tools\               ← development tooling, not deployed
+```
+
+| Tool | Status | Where | Use |
+|---|---|---|---|
+| [diagram-design](https://github.com/cathrynlavery/diagram-design) | ✅ installed, v2.6.22 | Claude Code plugin, **user scope** | 38 editorial diagram types as HTML/SVG — ask Claude for an architecture, flowchart, ER, Sankey… diagram |
+| [AI-Engineering-Coach](https://github.com/Yasharjamei/AI-Engineering-Coach) | ✅ installed, v0.1.0 | VS Code extension, source in `tools\AI-Engineering-Coach` | Command palette → *AI Engineering Coach*: agentic anti-pattern detection, context-health scoring |
+| [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) | ✅ installed, v1.18.0 | Python venv `tools\agent-framework-venv` | Building and orchestrating agents and multi-agent workflows |
+| [utopia](https://github.com/deeplethe/utopia) | ⚠️ cloned, **not running** | `tools\utopia` | Self-hosted knowledge graph / world model — needs Docker |
+| [topics/agent-loops](https://github.com/topics/agent-loops) | ❌ not installable | — | A GitHub topic *listing*, not a repository |
+
+### diagram-design
+
+Installed through the plugin CLI, so no interactive `/plugin` session was
+needed:
+
+```bash
+claude plugin marketplace add cathrynlavery/diagram-design
+```
+
+```bash
+claude plugin install diagram-design@diagram-design
+```
+
+It ships seven skills — `diagram-design`, `doctor`, `export-diagram`,
+`import-drawio`, `import-excalidraw`, `import-mermaid`, `profile` — and loads in
+the **next** Claude Code session. Third-party marketplaces do not auto-update by
+default; enable it under `/plugin` → Marketplaces → diagram-design.
+
+### AI-Engineering-Coach
+
+A fork of `microsoft/AI-Engineering-Coach`. It is not published to a
+marketplace, so the extension is built locally and sideloaded:
+
+```powershell
+cd "D:\Yashar projects\CLAUDE PROJECT\tools\AI-Engineering-Coach"
+npm ci
+npm run package
+code --install-extension ai-engineer-coach-0.1.0.vsix --force
+```
+
+Its npm scripts were reviewed before `npm ci`, since that runs lifecycle scripts:
+`prepare` only installs husky git hooks. To pick up upstream changes, `git pull`
+and repeat the three build steps.
+
+### Microsoft Agent Framework
+
+Installed into an **isolated virtual environment** rather than the global Python,
+because it pulls roughly 250 packages — OpenAI, Anthropic, Azure, Bedrock,
+Gemini, Mistral and Ollama clients plus OpenTelemetry — which would otherwise
+collide with anything else on the machine. Version 1.18.0 officially supports
+Python 3.14.
+
+```powershell
+& "D:\Yashar projects\CLAUDE PROJECT\tools\agent-framework-venv\Scripts\Activate.ps1"
+python -c "import agent_framework; print(agent_framework.__version__)"
+```
+
+The .NET SDK is also available on this machine; add it per project with
+`dotnet add package Microsoft.Agents.AI`.
+
+### utopia — blocked on Docker
+
+A Rust server backed by Postgres + pgvector, shipped as a Docker Compose stack.
+It is a full application, not a library. **Docker is not installed**, so the repo
+is cloned but not running. Docker Desktop on Windows needs administrator rights
+and WSL 2, and often a restart, so it has not been installed automatically.
+
+Once Docker is available:
+
+```powershell
+cd "D:\Yashar projects\CLAUDE PROJECT\tools\utopia"
+docker compose --profile app up -d
+```
+
+Then open http://localhost:1516 — the first registered account becomes
+administrator. Configure chat and embedding model endpoints under
+**Administration → Models** before ingesting documents. The default database
+password is `utopia`; change `UTOPIA_DB_PASSWORD` in `.env` **before first
+start**, because it is only applied when the data volume is initialised.
+
+### topics/agent-loops
+
+`github.com/topics/agent-loops` is a topic page — a list of many unrelated
+repositories tagged with that word. There is nothing to install at that URL;
+a specific repository from the list has to be chosen.
+
+---
+
 ## Engineering notes
 
 ### Environment
