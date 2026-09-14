@@ -210,6 +210,47 @@ Deployed routes: `/`, `/work/<slug>/`, `/entropy/`, `/portfolio-hero/`, and
 
 ---
 
+## 3D Selected Work
+
+The project cards live in 3D rather than as flat tiles. Three effects stack:
+
+| Effect | How |
+|---|---|
+| **Coverflow** | Each card turns on its Y axis by its distance from the viewport centre (up to ±53° at the edges), sinks back in Z and fades, so cards swing toward you as they arrive and away as they leave. Driven by card position, so it works on the pinned desktop rail *and* the touch swipe row. |
+| **Depth layers** | Screenshot, title and tags sit on separate `translateZ` planes; the screenshot is a floating "screen" tipped back 6° with its own contact shadow. Real parallax, not a rotated image. |
+| **Pointer tilt** | On a fine pointer the hovered card tilts toward the cursor with a moving specular glare. |
+
+CSS 3D transforms from a single `requestAnimationFrame` loop — no WebGL, no
+three.js, no new dependency.
+
+**The focused card is always flat.** A dead zone around the centre snaps it to
+exactly `rotateY(0) translateZ(0)`. Any residual 3D rotation makes browsers
+rasterise text soft, and the centre card is the one being read — the first
+version sat at 5–8° there and its titles were visibly fuzzy.
+
+**Mobile rail padding is deliberate.** `overflow-x: auto` forces vertical
+clipping, so without deep bottom padding the card shadow is cut off in a hard
+band.
+
+`prefers-reduced-motion` flattens everything and disables pinning.
+
+Verified in headless Edge (Playwright, vendored in `tools\AI-Engineering-Coach`)
+rather than the in-app preview pane, which stalls animation frames when it is
+not in the foreground:
+
+| Check | Result |
+|---|---|
+| Desktop focused card | `rotY 0`, `z 0`, opacity 1 |
+| Desktop edge cards | ±33° to ±53°, pushed back −104 to −168px |
+| Pointer tilt | responds (`rotateY 9.5°`, `rotateX 8.3°` at a corner) |
+| Mobile 390×844 touch | focused card flat, not pinned, no horizontal overflow |
+| Reduced motion | no rotation, not pinned |
+
+> **Why not img2threejs.** It reconstructs physical objects and characters from a
+> reference photo as procedural three.js models. These are flat dashboard
+> screenshots — there is no object to rebuild — and a WebGL scene per card
+> would cost far more than CSS transforms for the same visual result.
+
 ## The cursor
 
 A single continuous line that trails the pointer and **changes shape to express
@@ -350,6 +391,10 @@ D:\Yashar projects\CLAUDE PROJECT\
 | [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) | ✅ installed, v1.18.0 | Python venv `tools\agent-framework-venv` | Building and orchestrating agents and multi-agent workflows |
 | [utopia](https://github.com/deeplethe/utopia) | ⚠️ cloned, **not running** | `tools\utopia` | Self-hosted knowledge graph / world model — needs Docker |
 | [topics/agent-loops](https://github.com/topics/agent-loops) | ❌ not installable | — | A GitHub topic *listing*, not a repository |
+| [taste-skill](https://github.com/Leonxlnx/taste-skill) → `design-taste-frontend` | ✅ installed | `~\.claude\skills\design-taste-frontend` | Anti-slop frontend direction for landing pages and portfolios |
+| [impeccable](https://github.com/pbakaus/impeccable) | ✅ installed, v4.3.1 | Claude Code plugin, **user scope** | `/impeccable audit`, `polish`, `critique` and 20 more design commands; **adds two harness hooks** |
+| [img2threejs](https://github.com/img2threejs/img2threejs) | ✅ installed | `~\.claude\skills\img2threejs` | Rebuilds an *object or character* photo as a procedural Three.js model |
+| [awesome-design-md](https://github.com/voltagent/awesome-design-md) | 📚 cloned as reference | `tools\awesome-design-md` | 147 DESIGN.md files from real brands — a library, nothing to install |
 
 ### diagram-design
 
@@ -404,22 +449,106 @@ The .NET SDK is also available on this machine; add it per project with
 ### utopia — blocked on Docker
 
 A Rust server backed by Postgres + pgvector, shipped as a Docker Compose stack.
-It is a full application, not a library. **Docker is not installed**, so the repo
-is cloned but not running. Docker Desktop on Windows needs administrator rights
-and WSL 2, and often a restart, so it has not been installed automatically.
+It is a full application, not a library. The repo is cloned; it is **not running
+yet** because Docker is not installed.
 
-Once Docker is available:
+**Current state of the machine (Dell XPS 15 7590, Windows 11 Home build 26200):**
 
-```powershell
-cd "D:\Yashar projects\CLAUDE PROJECT\tools\utopia"
-docker compose --profile app up -d
+| Prerequisite | State |
+|---|---|
+| CPU virtualization (VT-x) | ✅ already on — no BIOS change needed |
+| WSL | ✅ v2.7.14 installed (Docker needs ≥ 2.1.5) |
+| Restart after WSL install | ⚠️ **still pending** — last boot predates the WSL install |
+| Docker Desktop | ❌ not installed — the installer never completed; `docker` is absent from disk, not just from PATH |
+
+> `docker : The term 'docker' is not recognized` means there is no `docker.exe`
+> at all. A Docker that is installed but not started fails differently, with
+> *"cannot connect to the Docker daemon"*.
+
+**Remaining steps, in order:**
+
+1. **Restart Windows.** WSL was installed but the machine has not rebooted since,
+   and pending file operations are queued.
+2. **Install Docker Desktop per-user.** Download it from docker.com and choose
+   **per-user** when asked. That mode needs **no administrator rights** and
+   installs to `%LOCALAPPDATA%\Programs\DockerDesktop`. Accept Docker's licence:
+   free for personal use and small organisations, paid above 250 employees or
+   $10M revenue.
+3. **Start Docker Desktop once**, wait for "Engine running", then open a *new*
+   terminal and check with `docker info`.
+4. **Create `tools\utopia\.env`** containing only
+   `UTOPIA_DB_PASSWORD=<letters and digits>`. Do **not** copy `.env.example` —
+   its database URL points at `localhost:1517`, which is correct outside Docker
+   but inside a container resolves to the app itself. Avoid `/ + =` in the
+   password; it is interpolated into a connection URL.
+5. **Start it:**
+
+   ```powershell
+   cd "D:\Yashar projects\CLAUDE PROJECT\tools\utopia"
+   docker compose --profile app up -d
+   ```
+
+6. Open http://localhost:1516 and **register immediately** — the first account
+   becomes administrator, and the port is published on all interfaces, so on
+   shared Wi-Fi someone else could claim it first. Then configure chat and
+   embedding endpoints under **Administration → Models**.
+
+> **Image tag.** `.env.example` suggests `UTOPIA_TAG=0.1.0` or `latest`; both
+> return 404 from `ghcr.io/deeplethe/utopia`. Only the compose default
+> `0.1.0-rc5` exists (linux/amd64) — a pre-release.
+
+> **Support caveat.** Docker's docs list Windows 11 Pro, Enterprise and Education
+> as supported and say Home runs Linux containers only. utopia is Linux-only, so
+> it should work, but Home is outside Docker's official support matrix.
+
+### Design skills
+
+**taste-skill.** Installed with Vercel's `skills` CLI (npm package `skills`,
+maintained under `vercel-labs/skills`), pinned and non-interactive, user scope,
+Claude Code only:
+
+```bash
+npx skills@1.5.26 add https://github.com/Leonxlnx/taste-skill --skill design-taste-frontend -g -a claude-code -y
 ```
 
-Then open http://localhost:1516 — the first registered account becomes
-administrator. Configure chat and embedding model endpoints under
-**Administration → Models** before ingesting documents. The default database
-password is `utopia`; change `UTOPIA_DB_PASSWORD` in `.env` **before first
-start**, because it is only applied when the data volume is initialised.
+The repo's `skill.sh` was read before install — it only prints a skill-name
+map and executes nothing.
+
+**impeccable.** The `/plugin` slash command needs an interactive session, so the
+equivalent CLI was used:
+
+```bash
+claude plugin marketplace add pbakaus/impeccable
+```
+
+```bash
+claude plugin install impeccable@impeccable
+```
+
+> **It installs harness hooks.** Unlike a plain skill, impeccable registers
+> `PostToolUse` and `Stop` hooks that run automatically in every Claude Code
+> session, and adds ~389 tokens to every session's context. Disable with
+> `claude plugin disable impeccable@impeccable` if that is unwanted. The
+> project-level `npx impeccable install` route was deliberately not used, because
+> it writes `.claude/`, `.cursor/` and hook files into this repo.
+
+**img2threejs.** Its documented install is a plain clone into the skills
+directory, so nothing ran:
+
+```bash
+git clone https://github.com/img2threejs/img2threejs.git ~/.claude/skills/img2threejs
+```
+
+It reconstructs **physical objects and characters** from a reference photo. It
+is not a fit for flat dashboard screenshots, which is why the 3D Selected Work
+cards below are built with CSS 3D instead. The optional CS2 domain plugins were
+not installed.
+
+**awesome-design-md.** A curated collection of 147 `DESIGN.md` files extracted
+from real brand sites (Claude, Apple, Airbnb, Linear…). There is no installer —
+you copy one into a project root so an agent generates UI in that style. It is
+cloned to `tools\awesome-design-md` for reference and deliberately **not** copied
+into this site, which already has its own design language.
 
 ### topics/agent-loops
 

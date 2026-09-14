@@ -90,7 +90,12 @@ export function WorkGallery() {
         // coverflow from horizontal distance to viewport centre
         const r = card.getBoundingClientRect()
         const offset = (r.left + r.width / 2 - mid) / mid // -1 … 1 across the screen
-        const clamped = Math.max(-1.4, Math.min(1.4, offset))
+        // Dead zone: the focused card snaps fully flat. Any residual 3D rotation
+        // makes the browser rasterise its text soft, and the centre card is the
+        // one being read.
+        const DEAD = 0.18
+        const eased = Math.sign(offset) * Math.max(0, Math.abs(offset) - DEAD) / (1 - DEAD)
+        const clamped = Math.max(-1.4, Math.min(1.4, eased))
         const turn = -clamped * MAX_TURN
         const sink = -Math.abs(clamped) * 120
         const lift = Math.abs(clamped) * 14
@@ -181,7 +186,9 @@ export function WorkGallery() {
           className={
             pinnedHeight
               ? 'flex gap-10 px-[18vw] will-change-transform'
-              : 'no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto px-[12vw] py-10'
+              : // overflow-x:auto forces vertical clipping, so the padding has to
+                // be deep enough for the card shadow or it cuts off in a hard band
+                'no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto px-[12vw] pb-24 pt-10'
           }
         >
           {work.map((project, i) => (
