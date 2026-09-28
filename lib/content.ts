@@ -243,6 +243,35 @@ export const work: Project[] = [
     methodology: ["Extract", "VLOOKUP", "INDEX-MATCH", "Validate", "Resolve", "Report"],
     tools: ["Excel", "Power Query", "SQL", "Power BI"],
   },
+  {
+    slug: "melbourne-flood-resilience-explorer",
+    category: "Research",
+    title: "Melbourne Flood Resilience Explorer",
+    summary:
+      "A public web tool asking who actually lives in the flood path, across 11,293 SA1s of Greater Melbourne.",
+    liveUrl: "https://yasharjamei.github.io/Melbourne_Flood/",
+    context:
+      "Flood planning usually reports one average for a whole municipality, which hides the households that carry the most risk. This reproduces the statistical analysis of Lama & Sun (2026), Urban Informatics 5:25, for Greater Melbourne using public data substitutes, and puts it in the hands of anyone with a browser.",
+    challenge:
+      "Exposure is not the same as vulnerability. Two places with identical flood depth cope very differently depending on age, health, income, language, car access and housing type — and the relationships between those factors are not constant across a city, so a single global regression misstates them.",
+    data: "11,293 ABS SA1s across 31 councils; planning flood overlays (LSIO, FO, SBO) and a modelled 1% AEP extent; elevation and 10 m relief; soil sand fraction; built-up share, tree canopy, road reserves and roof coverage; ABS Census age, health, assistance, language, vehicle and dwelling structure counts; SEIFA IRSD, IRSAD, IER and IEO; river basins and creek catchments.",
+    approach:
+      "Built exposure, sensitivity and adaptive-capacity components into a Flood Resilience Index, a damage index and an integrated FRI. Fitted GWR and MGWR on standardised variables with an adaptive bisquare kernel and AICc-selected bandwidths, reporting per-variable bandwidth, share of significant SA1s and VIF so unstable coefficients are visible rather than implied.",
+    outputs:
+      "Interactive map of 25 indicators, filterable by council, river basin or suburb; two-pin area comparison with age–sex pyramids and a flood-relevant profile; toggleable overlay, catchment and terrain layers; and a companion analysis page with GWR/MGWR model fit, per-variable coefficient maps, local R² and index correlations.",
+    insight:
+      "Vulnerability is local. MGWR gives each variable its own bandwidth, and elevation stayed significant everywhere while most socio-economic terms did not — evidence that one city-wide coefficient hides exactly the neighbourhood differences flood planning needs.",
+    methodology: [
+      "Index design",
+      "Spatial join",
+      "Standardise",
+      "GWR",
+      "MGWR",
+      "Diagnostics",
+      "Publish",
+    ],
+    tools: ["Python", "MGWR", "Spatial Statistics", "Web GIS", "ABS Census", "SEIFA"],
+  },
 ];
 
 export const capabilities = [
